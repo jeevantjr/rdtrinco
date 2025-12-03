@@ -1,279 +1,263 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Trincomalee District Disaster Response Dashboard</title>
-
-<!-- Fonts & Icons -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<style>
-:root{
-  --brand:#0a53be;
-  --bg:#f6f8ff;
-  --muted:#6b7280;
-  --green:#2ecc71;
-  --orange:#f39c12;
-  --red:#e74c3c;
-  --card:#ffffff;
-  --radius:14px;
-}
-
-body{
-  margin:0;
-  font-family:"Poppins", sans-serif;
-  background:var(--bg);
-  color:#222;
-}
-
-header{
-  text-align:center;
-  padding:25px 10px;
-  background:linear-gradient(135deg,#0a53be,#1e90ff);
-  color:white;
-  border-bottom-left-radius:20px;
-  border-bottom-right-radius:20px;
-}
-
-header h1{
-  margin:0;
-  font-size:25px;
-  font-weight:600;
-}
-
-header p{
-  margin:6px 0;
-  font-size:14px;
-}
-
-.date-badge{
-  background:white;
-  color:var(--brand);
-  padding:6px 14px;
-  border-radius:20px;
-  font-weight:700;
-  display:inline-block;
-  margin-top:8px;
-}
-
-.container{
-  max-width:1200px;
-  margin:auto;
-  padding:16px;
-}
-
-.cards-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:12px;
-  margin:18px 0 30px;
-}
-
-.moh-card{
-  background:var(--card);
-  padding:14px;
-  border-radius:var(--radius);
-  box-shadow:0 5px 14px rgba(0,0,0,0.06);
-  border-left:7px solid;
-  transition:0.2s;
-}
-
-.moh-card:hover{
-  transform:translateY(-3px);
-}
-
-.moh-card h3{
-  margin:0;
-  font-size:17px;
-  font-weight:700;
-}
-
-.moh-card p{
-  margin:3px 0;
-  font-size:13px;
-}
-
-.chart-card{
-  background:var(--card);
-  padding:15px;
-  border-radius:var(--radius);
-  box-shadow:0 5px 14px rgba(0,0,0,0.06);
-  margin-bottom:25px;
-}
-
-.table-wrap{
-  background:var(--card);
-  padding:15px;
-  border-radius:var(--radius);
-  box-shadow:0 5px 14px rgba(0,0,0,0.06);
-  overflow:auto;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  min-width:900px;
-}
-
-th, td{
-  padding:10px;
-  text-align:center;
-  border-bottom:1px solid #e0e7ff;
-  font-size:13px;
-}
-
-th{
-  background:var(--brand);
-  color:white;
-  font-weight:600;
-  position:sticky;
-  top:0;
-  z-index:1;
-}
-
-tr:nth-child(even){
-  background:#f0f5ff;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trincomalee Disaster Response Dashboard</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configure Tailwind to use the 'Inter' font and a custom theme -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#059669', // Emerald Green
+                        'secondary': '#1d4ed8', // Blue
+                        'accent': '#f59e0b', // Amber
+                        'background-light': '#f9fafb',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom styles for the data visualization and table aesthetics */
+        .data-bar {
+            transition: width 0.8s ease-out;
+        }
+        .scroll-shadow {
+            /* Adds a subtle shadow on the sides for scrollable content */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+        .table-container {
+            max-height: 80vh; /* Limit height for responsiveness */
+            overflow-y: auto;
+        }
+        /* Custom icon SVG for the main header */
+        .icon-svg {
+            width: 96px;
+            height: 96px;
+            color: white;
+        }
+    </style>
 </head>
+<body class="bg-background-light font-sans p-4 sm:p-6 lg:p-10">
 
-<body>
+    <!-- Main Content Container -->
+    <div id="app" class="max-w-7xl mx-auto space-y-12">
 
-<header>
-  <h1>Trincomalee District Disaster Response Dashboard</h1>
-  <p>Health Information Management Unit — Office of RDHS Trincomalee</p>
-  <span class="date-badge">Data Snapshot: 3rd December 2025</span>
-</header>
+        <!-- Header Card: Logo, Title, and Date -->
+        <header class="text-center">
+            <div class="bg-primary shadow-2xl rounded-xl p-6 sm:p-10 text-white transform hover:scale-[1.01] transition duration-300">
+                
+                <!-- Logo Placeholder (Replacing external image path with a relevant icon) -->
+                <div class="flex justify-center mb-4">
+                    <!-- Placeholder for: TrincoDisaster2025/images/icon-192 (1).png -->
+                    <svg class="icon-svg fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <path d="M12 17V8"></path>
+                        <path d="M16 11l-4 4-4-4"></path>
+                    </svg>
+                </div>
+                
+                <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight mb-2">
+                    Trincomalee District Disaster Response Dashboard
+                </h1>
+                <p class="text-xl sm:text-2xl font-semibold opacity-90">
+                    Real-time status of welfare camps
+                </p>
 
-<div class="container">
+                <div class="mt-4 pt-4 border-t border-white border-opacity-30">
+                    <p class="text-sm sm:text-lg font-medium">
+                        Health Information Management Unit | Office of Regional Director of Health Services (RDHS)
+                    </p>
+                    <p class="text-lg font-light">
+                        Trincomalee
+                    </p>
+                </div>
 
-  <!-- MOH Cards -->
-  <div id="cardsGrid" class="cards-grid"></div>
+                <!-- Date Display -->
+                <div class="mt-6">
+                    <span id="data-date" class="inline-flex items-center text-sm font-bold bg-white text-primary rounded-full px-4 py-2 shadow-lg">
+                        <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        Data Last Updated: December 3rd, 2025
+                    </span>
+                </div>
+            </div>
+        </header>
 
-  <!-- Single Bar Graph -->
-  <div class="chart-card">
-    <h3 style="margin:0 0 10px; font-size:18px; color:var(--brand); font-weight:700;">
-      People Affected by MOH Area
-    </h3>
-    <canvas id="barChart" height="200"></canvas>
-  </div>
+        <!-- Brief Overview & Key Metrics -->
+        <section class="space-y-6">
+            <h2 class="text-3xl font-bold text-gray-800 border-b-2 border-primary pb-2 flex items-center">
+                <span class="mr-2">📊</span> Situation Overview
+            </h2>
+            <p class="text-gray-600 text-lg">
+                This dashboard provides a concise summary of the welfare camp status across the Trincomalee District, based on data received from various Medical Officer of Health (MOH) areas on December 3rd, 2025. The data focuses on the count of affected people and vulnerable groups requiring immediate attention.
+            </p>
 
-  <!-- Table -->
-  <div class="table-wrap">
-    <h3 style="margin:0 0 10px; font-size:18px; color:var(--brand); font-weight:700;">
-      Aggregated MOH Area Data
-    </h3>
-    <table>
-      <thead>
-        <tr>
-          <th>MOH Area</th>
-          <th>Families</th>
-          <th>People</th>
-          <th>Male</th>
-          <th>Female</th>
-          <th>Infants</th>
-          <th>Under 5</th>
-          <th>Pregnant</th>
-          <th>Deaths</th>
-          <th>Missing</th>
-        </tr>
-      </thead>
-      <tbody id="tableBody"></tbody>
-    </table>
-  </div>
+            <!-- KPI Cards -->
+            <div id="kpi-cards" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                <!-- Cards will be injected by JavaScript -->
+            </div>
+        </section>
 
-</div>
+        <!-- Visualization Section: People by MOH Area (Simple Bar Chart) -->
+        <section class="space-y-6">
+            <h2 class="text-3xl font-bold text-gray-800 border-b-2 border-primary pb-2 flex items-center">
+                <span class="mr-2">📈</span> Affected Population by MOH Area
+            </h2>
+            <div id="moh-visualization" class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 space-y-4">
+                <!-- Bar chart visualization will be injected by JavaScript -->
+            </div>
+        </section>
 
-<script>
-/* Aggregated MOH data */
-const mohData = [
-  {name:"Kuchaveli",families:2,people:10,male:5,female:5,infants:0,under5:2,pregnant:0,deaths:0,missing:0},
-  {name:"Gomarankadawela",families:10,people:0,male:0,female:0,infants:0,under5:0,pregnant:0,deaths:0,missing:0},
-  {name:"Padavisripura",families:58,people:122,male:0,female:0,infants:0,under5:0,pregnant:0,deaths:0,missing:0},
-  {name:"Uppuveli",families:5,people:26,male:10,female:14,infants:0,under5:0,pregnant:0,deaths:0,missing:0},
-  {name:"Trincomalee",families:5,people:5,male:0,female:0,infants:0,under5:0,pregnant:0,deaths:0,missing:0},
-  {name:"Kanthale",families:139,people:448,male:218,female:230,infants:2,under5:30,pregnant:2,deaths:0,missing:0},
-  {name:"Kurunjakerni",families:299,people:1048,male:277,female:278,infants:6,under5:35,pregnant:5,deaths:0,missing:0},
-  {name:"Seruwila",families:536,people:1564,male:739,female:825,infants:10,under5:88,pregnant:4,deaths:0,missing:0},
-  {name:"Echilampathu",families:620,people:1795,male:518,female:555,infants:0,under5:25,pregnant:27,deaths:0,missing:0},
-  {name:"Kinniya",families:398,people:1168,male:544,female:624,infants:23,under5:114,pregnant:11,deaths:0,missing:0},
-  {name:"Muthur",families:3046,people:9348,male:4299,female:4563,infants:12,under5:743,pregnant:52,deaths:0,missing:0},
-  {name:"Thambalagamam",families:0,people:0,male:0,female:0,infants:0,under5:0,pregnant:0,deaths:0,missing:0}
-];
+        <!-- Detailed Data Table -->
+        <section class="space-y-6">
+            <h2 class="text-3xl font-bold text-gray-800 border-b-2 border-primary pb-2 flex items-center">
+                <span class="mr-2">📋</span> Detailed Welfare Camp Data (All Areas)
+            </h2>
+            
+            <div class="table-container bg-white rounded-xl shadow-2xl">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="sticky top-0 bg-primary text-white shadow-md">
+                        <tr>
+                            <th class="px-3 py-3 text-left text-sm font-semibold uppercase tracking-wider rounded-tl-xl">MOH Area</th>
+                            <th class="px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider">Families</th>
+                            <th class="px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider">People</th>
+                            <th class="px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider hidden sm:table-cell">Male</th>
+                            <th class="px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider hidden sm:table-cell">Female</th>
+                            <th class="px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider bg-secondary/80">Infants</th>
+                            <th class="px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider bg-secondary/80">Under 5</th>
+                            <th class="px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider bg-secondary/80 rounded-tr-xl">Pregnant</th>
+                            <!-- Hiding Deaths/Missing as they are all 0, but including them in data for completeness -->
+                        </tr>
+                    </thead>
+                    <tbody id="data-table-body" class="bg-white divide-y divide-gray-100">
+                        <!-- Table rows will be injected by JavaScript -->
+                    </tbody>
+                    <tfoot id="data-table-footer">
+                        <!-- Footer row will be injected by JavaScript -->
+                    </tfoot>
+                </table>
+            </div>
+        </section>
 
-/* ---------- MOH CARDS ---------- */
-function alertColor(p){
-  if(p>2000) return "var(--red)";
-  if(p>=1000) return "var(--orange)";
-  return "var(--green)";
-}
+    </div>
 
-const cardsGrid = document.getElementById("cardsGrid");
-mohData.forEach(m=>{
-  const div=document.createElement("div");
-  div.className="moh-card";
-  div.style.borderLeftColor=alertColor(m.people);
-  div.innerHTML = `
-    <h3>${m.name}</h3>
-    <p>Families: ${m.families}</p>
-    <p>People: ${m.people}</p>
-    <p>Male: ${m.male} • Female: ${m.female}</p>
-    <p>Infants: ${m.infants} • Under 5: ${m.under5}</p>
-    <p>Pregnant: ${m.pregnant}</p>
-  `;
-  cardsGrid.appendChild(div);
-});
+    <!-- JavaScript for Data Handling and Rendering -->
+    <script>
+        const disasterData = [
+            { moh: "Kuchaveli", families: 2, people: 10, male: 5, female: 5, infants: 0, under5: 2, pregnant: 0, deaths: 0, missing: 0 },
+            { moh: "Gomarankadawela", families: 10, people: 0, male: 0, female: 0, infants: 0, under5: 0, pregnant: 0, deaths: 0, missing: 0 },
+            { moh: "Padavisripura", families: 58, people: 122, male: 0, female: 0, infants: 0, under5: 0, pregnant: 0, deaths: 0, missing: 0 },
+            { moh: "Uppuveli", families: 5, people: 26, male: 10, female: 14, infants: 0, under5: 0, pregnant: 0, deaths: 0, missing: 0 },
+            { moh: "Trincomalee", families: 5, people: 5, male: 0, female: 0, infants: 0, under5: 0, pregnant: 0, deaths: 0, missing: 0 },
+            { moh: "Kanthale", families: 139, people: 448, male: 218, female: 230, infants: 2, under5: 30, pregnant: 2, deaths: 0, missing: 0 },
+            { moh: "Kurunjakerni", families: 299, people: 1048, male: 277, female: 278, infants: 6, under5: 35, pregnant: 5, deaths: 0, missing: 0 },
+            { moh: "Seruwila", families: 536, people: 1564, male: 739, female: 825, infants: 10, under5: 88, pregnant: 4, deaths: 0, missing: 0 },
+            { moh: "Echilampathu", families: 620, people: 1795, male: 518, female: 555, infants: 0, under5: 25, pregnant: 27, deaths: 0, missing: 0 },
+            { moh: "Kinniya", families: 398, people: 1168, male: 544, female: 624, infants: 23, under5: 114, pregnant: 11, deaths: 0, missing: 0 },
+            { moh: "Muthur", families: 3046, people: 9348, male: 4299, female: 4563, infants: 12, under5: 743, pregnant: 52, deaths: 0, missing: 0 },
+            { moh: "Thambalagamam", families: 0, people: 0, male: 0, female: 0, infants: 0, under5: 0, pregnant: 0, deaths: 0, missing: 0 }
+        ];
 
-/* ---------- TABLE ---------- */
-const tableBody=document.getElementById("tableBody");
-mohData.forEach(m=>{
-  const tr=document.createElement("tr");
-  tr.innerHTML = `
-    <td>${m.name}</td>
-    <td>${m.families}</td>
-    <td>${m.people}</td>
-    <td>${m.male}</td>
-    <td>${m.female}</td>
-    <td>${m.infants}</td>
-    <td>${m.under5}</td>
-    <td>${m.pregnant}</td>
-    <td>${m.deaths}</td>
-    <td>${m.missing}</td>
-  `;
-  tableBody.appendChild(tr);
-});
+        // 1. Calculate Totals
+        const totals = disasterData.reduce((acc, curr) => {
+            acc.families += curr.families;
+            acc.people += curr.people;
+            acc.male += curr.male;
+            acc.female += curr.female;
+            acc.infants += curr.infants;
+            acc.under5 += curr.under5;
+            acc.pregnant += curr.pregnant;
+            acc.deaths += curr.deaths;
+            acc.missing += curr.missing;
+            return acc;
+        }, { families: 0, people: 0, male: 0, female: 0, infants: 0, under5: 0, pregnant: 0, deaths: 0, missing: 0 });
 
-/* ---------- SINGLE BAR CHART ---------- */
-const ctx = document.getElementById("barChart").getContext("2d");
-new Chart(ctx,{
-  type:"bar",
-  data:{
-    labels:mohData.map(m=>m.name),
-    datasets:[{
-      label:"People",
-      data:mohData.map(m=>m.people),
-      backgroundColor:mohData.map(m=>{
-        let c=alertColor(m.people);
-        if(c==="var(--green)") return "rgba(46,204,113,0.9)";
-        if(c==="var(--orange)") return "rgba(243,156,18,0.9)";
-        return "rgba(231,76,60,0.9)";
-      }),
-      borderRadius:8
-    }]
-  },
-  options:{
-    plugins:{legend:{display:false}},
-    scales:{
-      y:{beginAtZero:true}
-    }
-  }
-});
-</script>
+        // 2. Render KPI Cards
+        const kpiMetrics = [
+            { label: "Total Affected People", value: totals.people, icon: "👤", color: "bg-secondary", text: "text-white" },
+            { label: "Total Families", value: totals.families, icon: "🏠", color: "bg-accent", text: "text-gray-800" },
+            { label: "Vulnerable: Infants", value: totals.infants, icon: "👶", color: "bg-sky-500", text: "text-white" },
+            { label: "Vulnerable: Under 5", value: totals.under5, icon: "🧒", color: "bg-sky-400", text: "text-gray-800" },
+            { label: "Vulnerable: Pregnant", value: totals.pregnant, icon: "🤰", color: "bg-pink-500", text: "text-white" },
+            
+        ];
+        
+        const kpiContainer = document.getElementById('kpi-cards');
+        kpiMetrics.forEach(metric => {
+            const card = `
+                <div class="${metric.color} ${metric.text} p-4 rounded-xl shadow-lg border border-gray-100 transform hover:shadow-xl transition duration-200">
+                    <div class="text-4xl mb-2">${metric.icon}</div>
+                    <p class="text-xs font-semibold uppercase opacity-80">${metric.label}</p>
+                    <p class="text-3xl font-extrabold mt-1">${metric.value.toLocaleString()}</p>
+                </div>
+            `;
+            kpiContainer.innerHTML += card;
+        });
 
+        // 3. Render MOH Area Visualization (Bar Chart)
+        const vizContainer = document.getElementById('moh-visualization');
+        const maxPeople = Math.max(...disasterData.map(d => d.people));
+
+        disasterData.forEach(item => {
+            if (item.people > 0) {
+                const percentage = (item.people / maxPeople) * 100;
+                const barHtml = `
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-1 sm:space-y-0 sm:space-x-4">
+                        <div class="w-full sm:w-40 text-sm font-semibold text-gray-700 truncate">${item.moh}</div>
+                        <div class="flex-grow bg-gray-200 rounded-full h-5 relative">
+                            <div class="data-bar h-full rounded-full bg-primary/80 flex items-center justify-end pr-2 text-white text-xs font-bold" 
+                                style="width: ${percentage.toFixed(2)}%;">
+                                ${item.people.toLocaleString()}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                vizContainer.innerHTML += barHtml;
+            }
+        });
+
+        // 4. Render Detailed Data Table
+        const tableBody = document.getElementById('data-table-body');
+        disasterData.forEach((item, index) => {
+            const rowClass = index % 2 === 0 ? 'bg-white hover:bg-gray-50' : 'bg-gray-50 hover:bg-gray-100';
+            const rowHtml = `
+                <tr class="${rowClass} transition duration-150 ease-in-out">
+                    <td class="px-3 py-3 whitespace-nowrap text-sm font-medium text-gray-900">${item.moh}</td>
+                    <td class="px-3 py-3 whitespace-nowrap text-sm text-right font-semibold text-accent">${item.families.toLocaleString()}</td>
+                    <td class="px-3 py-3 whitespace-nowrap text-sm text-right font-extrabold text-secondary">${item.people.toLocaleString()}</td>
+                    <td class="px-3 py-3 whitespace-nowrap text-sm text-right hidden sm:table-cell">${item.male.toLocaleString()}</td>
+                    <td class="px-3 py-3 whitespace-nowrap text-sm text-right hidden sm:table-cell">${item.female.toLocaleString()}</td>
+                    <td class="px-3 py-3 whitespace-nowrap text-sm text-right font-medium bg-secondary/10 text-sky-700">${item.infants.toLocaleString()}</td>
+                    <td class="px-3 py-3 whitespace-nowrap text-sm text-right font-medium bg-secondary/10 text-sky-700">${item.under5.toLocaleString()}</td>
+                    <td class="px-3 py-3 whitespace-nowrap text-sm text-right font-medium bg-secondary/10 text-pink-600">${item.pregnant.toLocaleString()}</td>
+                </tr>
+            `;
+            tableBody.innerHTML += rowHtml;
+        });
+
+        // Render Table Footer (Totals)
+        const tableFooter = document.getElementById('data-table-footer');
+        const footerHtml = `
+            <tr class="bg-gray-800 text-white font-bold text-base sticky bottom-0">
+                <td class="px-3 py-3 whitespace-nowrap rounded-bl-xl">TOTALS</td>
+                <td class="px-3 py-3 text-right">${totals.families.toLocaleString()}</td>
+                <td class="px-3 py-3 text-right">${totals.people.toLocaleString()}</td>
+                <td class="px-3 py-3 text-right hidden sm:table-cell">${totals.male.toLocaleString()}</td>
+                <td class="px-3 py-3 text-right hidden sm:table-cell">${totals.female.toLocaleString()}</td>
+                <td class="px-3 py-3 text-right bg-secondary/90">${totals.infants.toLocaleString()}</td>
+                <td class="px-3 py-3 text-right bg-secondary/90">${totals.under5.toLocaleString()}</td>
+                <td class="px-3 py-3 text-right bg-secondary/90 rounded-br-xl">${totals.pregnant.toLocaleString()}</td>
+            </tr>
+        `;
+        tableFooter.innerHTML += footerHtml;
+
+    </script>
 </body>
 </html>
