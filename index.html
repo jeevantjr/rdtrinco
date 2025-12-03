@@ -1,459 +1,279 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Trincomalee District Disaster Response Dashboard</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Trincomalee District Disaster Response Dashboard</title>
 
-  <!-- Fonts & Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<!-- Fonts & Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <style>
-    :root{
-      --brand-1:#0a53be;
-      --bg:#f3f7ff;
-      --card:#ffffff;
-      --muted:#6b7280;
-      --green:#2ecc71;
-      --orange:#f39c12;
-      --red:#e74c3c;
-      --glass: rgba(255,255,255,0.9);
-      --radius: 14px;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(180deg,#eef5ff 0%,var(--bg) 100%);
-      color:#223;
-      -webkit-font-smoothing:antialiased;
-    }
+<style>
+:root{
+  --brand:#0a53be;
+  --bg:#f6f8ff;
+  --muted:#6b7280;
+  --green:#2ecc71;
+  --orange:#f39c12;
+  --red:#e74c3c;
+  --card:#ffffff;
+  --radius:14px;
+}
 
-    header{
-      padding:28px 16px;
-      text-align:center;
-      background: linear-gradient(135deg,var(--brand-1),#1e90ff);
-      color:white;
-      border-bottom-left-radius:18px;
-      border-bottom-right-radius:18px;
-    }
-    header img{ width:86px; height:86px; object-fit:contain; border-radius:12px; background:rgba(255,255,255,0.08); padding:8px; }
-    header h1{ margin:8px 0 2px; font-size:22px; font-weight:600; letter-spacing:0.2px; }
-    header p{ margin:0; font-weight:300; }
+body{
+  margin:0;
+  font-family:"Poppins", sans-serif;
+  background:var(--bg);
+  color:#222;
+}
 
-    .container{ max-width:1200px; margin:20px auto; padding:16px; }
+header{
+  text-align:center;
+  padding:25px 10px;
+  background:linear-gradient(135deg,#0a53be,#1e90ff);
+  color:white;
+  border-bottom-left-radius:20px;
+  border-bottom-right-radius:20px;
+}
 
-    .top-row{
-      display:flex;
-      gap:16px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:18px;
-    }
+header h1{
+  margin:0;
+  font-size:25px;
+  font-weight:600;
+}
 
-    .card{
-      background:var(--card);
-      border-radius:var(--radius);
-      padding:14px;
-      box-shadow: 0 6px 18px rgba(16,24,40,0.06);
-    }
+header p{
+  margin:6px 0;
+  font-size:14px;
+}
 
-    .main-card{
-      flex:1 1 720px;
-      display:flex;
-      gap:14px;
-      align-items:center;
-      padding:16px;
-    }
-    .main-card .meta{ flex:1; text-align:left;}
-    .date-badge{
-      display:inline-block;
-      background:#fff;
-      color:var(--brand-1);
-      padding:8px 12px;
-      border-radius:999px;
-      font-weight:600;
-      box-shadow: 0 4px 10px rgba(12,38,80,0.06);
-    }
+.date-badge{
+  background:white;
+  color:var(--brand);
+  padding:6px 14px;
+  border-radius:20px;
+  font-weight:700;
+  display:inline-block;
+  margin-top:8px;
+}
 
-    .controls{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-    select{ padding:10px 12px; border-radius:10px; border:1px solid #e6eefc; min-width:220px; background:white; font-weight:600; }
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:16px;
+}
 
-    /* cards grid */
-    .cards-grid{
-      display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
-      gap:12px;
-      margin:16px 0 28px;
-    }
-    .moh-card{
-      padding:12px;
-      border-radius:12px;
-      display:flex;
-      align-items:center;
-      gap:12px;
-      transition:transform .18s;
-    }
-    .moh-card:hover{ transform:translateY(-4px); }
-    .moh-card .left{ font-size:22px; font-weight:700;}
-    .moh-card .right{ font-size:13px; color:var(--muted); }
-    .badge{
-      display:inline-block;
-      padding:6px 10px;
-      border-radius:10px;
-      font-weight:700;
-      color:white;
-      font-size:13px;
-    }
+.cards-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:12px;
+  margin:18px 0 30px;
+}
 
-    /* charts area */
-    .charts{
-      display:grid;
-      grid-template-columns: 1fr 380px;
-      gap:14px;
-      margin-bottom:22px;
-    }
-    canvas{ background:var(--card); padding:12px; border-radius:12px; }
+.moh-card{
+  background:var(--card);
+  padding:14px;
+  border-radius:var(--radius);
+  box-shadow:0 5px 14px rgba(0,0,0,0.06);
+  border-left:7px solid;
+  transition:0.2s;
+}
 
-    /* table */
-    .table-wrap{ overflow:auto; background:transparent; padding-bottom:24px; }
-    table{ width:100%; border-collapse:collapse; min-width:920px; background:transparent; }
-    th,td{ padding:10px 12px; text-align:center; border-bottom:1px solid #edf4ff; font-size:13px; }
-    th{ background:var(--brand-1); color:white; position:sticky; top:0; z-index:1; }
-    tr:nth-child(even){ background:rgba(236,245,255,0.6); }
+.moh-card:hover{
+  transform:translateY(-3px);
+}
 
-    /* responsive */
-    @media (max-width:940px){
-      .charts{ grid-template-columns:1fr; }
-      .main-card{ flex-direction:column; text-align:center; }
-      .main-card .meta{ text-align:center; }
-    }
+.moh-card h3{
+  margin:0;
+  font-size:17px;
+  font-weight:700;
+}
 
-    footer{ text-align:center; color:var(--muted); font-size:13px; margin:24px 0 48px; }
-  </style>
+.moh-card p{
+  margin:3px 0;
+  font-size:13px;
+}
+
+.chart-card{
+  background:var(--card);
+  padding:15px;
+  border-radius:var(--radius);
+  box-shadow:0 5px 14px rgba(0,0,0,0.06);
+  margin-bottom:25px;
+}
+
+.table-wrap{
+  background:var(--card);
+  padding:15px;
+  border-radius:var(--radius);
+  box-shadow:0 5px 14px rgba(0,0,0,0.06);
+  overflow:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:900px;
+}
+
+th, td{
+  padding:10px;
+  text-align:center;
+  border-bottom:1px solid #e0e7ff;
+  font-size:13px;
+}
+
+th{
+  background:var(--brand);
+  color:white;
+  font-weight:600;
+  position:sticky;
+  top:0;
+  z-index:1;
+}
+
+tr:nth-child(even){
+  background:#f0f5ff;
+}
+</style>
 </head>
+
 <body>
 
 <header>
-  <img src="TrincoDisaster2025/images/icon-192 (1).png" alt="RDHS Trincomalee Logo">
   <h1>Trincomalee District Disaster Response Dashboard</h1>
-  <p>Health Information Management Unit — Office of the RDHS, Trincomalee</p>
-  <div style="margin-top:12px;">
-    <span class="date-badge">Data snapshot: 3rd December 2025</span>
-  </div>
+  <p>Health Information Management Unit — Office of RDHS Trincomalee</p>
+  <span class="date-badge">Data Snapshot: 3rd December 2025</span>
 </header>
 
 <div class="container">
 
-  <!-- Top summary & controls -->
-  <div class="top-row">
-    <div class="card main-card">
-      <div style="width:86px;">
-        <i class="fa-solid fa-map-location-dot" style="font-size:34px; color:var(--brand-1)"></i>
-      </div>
-      <div class="meta">
-        <div style="font-weight:700; font-size:18px; margin-bottom:4px">District snapshot</div>
-        <div style="color:var(--muted); font-weight:500">Aggregated by MOH area (duplicates consolidated). Use the filter to view a single MOH area or All.</div>
-      </div>
+  <!-- MOH Cards -->
+  <div id="cardsGrid" class="cards-grid"></div>
 
-      <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
-        <div style="display:flex; gap:8px; align-items:center;">
-          <label for="mohSelect" style="font-size:13px; color:var(--muted); font-weight:600;">Filter MOH</label>
-          <select id="mohSelect">
-            <option value="All">All MOH Areas (district total)</option>
-          </select>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-size:13px; color:var(--muted)">District totals</div>
-          <div style="font-weight:800; font-size:18px; color:var(--brand-1)" id="districtPeople">15,534 People</div>
-        </div>
-      </div>
-    </div>
-
-    <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
-      <div class="card" style="min-width:170px;">
-        <div style="font-size:12px; color:var(--muted)">Total Families</div>
-        <div style="font-weight:800; font-size:18px; color:var(--brand-1)">5,118</div>
-      </div>
-      <div class="card" style="min-width:170px;">
-        <div style="font-size:12px; color:var(--muted)">Total Infants (&lt;1y)</div>
-        <div style="font-weight:800; font-size:18px; color:var(--brand-1)">53</div>
-      </div>
-      <div class="card" style="min-width:170px;">
-        <div style="font-size:12px; color:var(--muted)">Under 5 years</div>
-        <div style="font-weight:800; font-size:18px; color:var(--brand-1)">1,037</div>
-      </div>
-    </div>
+  <!-- Single Bar Graph -->
+  <div class="chart-card">
+    <h3 style="margin:0 0 10px; font-size:18px; color:var(--brand); font-weight:700;">
+      People Affected by MOH Area
+    </h3>
+    <canvas id="barChart" height="200"></canvas>
   </div>
 
-  <!-- MOH cards (color-coded) -->
-  <div class="cards-grid" id="cardsGrid" aria-live="polite"></div>
-
-  <!-- Charts -->
-  <div class="charts">
-    <div class="card" style="padding:12px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-        <div style="font-weight:700">People by MOH Area</div>
-        <div style="font-size:12px; color:var(--muted)">Bar chart — click legend to toggle</div>
-      </div>
-      <canvas id="barChart" height="220"></canvas>
-    </div>
-
-    <div class="card" style="padding:12px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-        <div style="font-weight:700" id="genderTitle">Gender split — All</div>
-        <div style="font-size:12px; color:var(--muted)"><i class="fa-solid fa-chart-pie"></i></div>
-      </div>
-      <canvas id="pieChart" height="220"></canvas>
-      <div style="margin-top:10px; font-size:13px; color:var(--muted)">Male / Female counts for selected MOH (or district total).</div>
-    </div>
+  <!-- Table -->
+  <div class="table-wrap">
+    <h3 style="margin:0 0 10px; font-size:18px; color:var(--brand); font-weight:700;">
+      Aggregated MOH Area Data
+    </h3>
+    <table>
+      <thead>
+        <tr>
+          <th>MOH Area</th>
+          <th>Families</th>
+          <th>People</th>
+          <th>Male</th>
+          <th>Female</th>
+          <th>Infants</th>
+          <th>Under 5</th>
+          <th>Pregnant</th>
+          <th>Deaths</th>
+          <th>Missing</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
   </div>
 
-  <!-- Details table -->
-  <div class="card table-wrap">
-    <div style="font-weight:700; margin-bottom:8px; color:var(--brand-1)">Aggregated MOH Area Data</div>
-    <div style="overflow:auto">
-      <table id="dataTable" role="table">
-        <thead>
-          <tr>
-            <th>MOH Area</th>
-            <th>Families</th>
-            <th>People</th>
-            <th>Male</th>
-            <th>Female</th>
-            <th>Infants</th>
-            <th>Under 5</th>
-            <th>Pregnant</th>
-            <th>Deaths</th>
-            <th>Missing</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <footer>Prepared for RDHS Trincomalee — snapshot 3rd December 2025</footer>
 </div>
 
 <script>
-/*
-  Aggregated MOH data (one record per MOH) -- taken from your consolidated totals.
-  Fields: name, families, people, male, female, infants, under5, pregnant, deaths, missing
-*/
+/* Aggregated MOH data */
 const mohData = [
-  { name:"Kuchaveli", families:2, people:10, male:5, female:5, infants:0, under5:2, pregnant:0, deaths:0, missing:0 },
-  { name:"Gomarankadawela", families:10, people:0, male:0, female:0, infants:0, under5:0, pregnant:0, deaths:0, missing:0 },
-  { name:"Padavisripura", families:58, people:122, male:0, female:0, infants:0, under5:0, pregnant:0, deaths:0, missing:0 },
-  { name:"Uppuveli", families:5, people:26, male:10, female:14, infants:0, under5:0, pregnant:0, deaths:0, missing:0 },
-  { name:"Trincomalee", families:5, people:5, male:0, female:0, infants:0, under5:0, pregnant:0, deaths:0, missing:0 },
-  { name:"Kanthale", families:139, people:448, male:218, female:230, infants:2, under5:30, pregnant:2, deaths:0, missing:0 },
-  { name:"Kurunjakerni", families:299, people:1048, male:277, female:278, infants:6, under5:35, pregnant:5, deaths:0, missing:0 },
-  { name:"Seruwila", families:536, people:1564, male:739, female:825, infants:10, under5:88, pregnant:4, deaths:0, missing:0 },
-  { name:"Echilampathu", families:620, people:1795, male:518, female:555, infants:0, under5:25, pregnant:27, deaths:0, missing:0 },
-  { name:"Kinniya", families:398, people:1168, male:544, female:624, infants:23, under5:114, pregnant:11, deaths:0, missing:0 },
-  { name:"Muthur", families:3046, people:9348, male:4299, female:4563, infants:12, under5:743, pregnant:52, deaths:0, missing:0 },
-  { name:"Thambalagamam", families:0, people:0, male:0, female:0, infants:0, under5:0, pregnant:0, deaths:0, missing:0 }
+  {name:"Kuchaveli",families:2,people:10,male:5,female:5,infants:0,under5:2,pregnant:0,deaths:0,missing:0},
+  {name:"Gomarankadawela",families:10,people:0,male:0,female:0,infants:0,under5:0,pregnant:0,deaths:0,missing:0},
+  {name:"Padavisripura",families:58,people:122,male:0,female:0,infants:0,under5:0,pregnant:0,deaths:0,missing:0},
+  {name:"Uppuveli",families:5,people:26,male:10,female:14,infants:0,under5:0,pregnant:0,deaths:0,missing:0},
+  {name:"Trincomalee",families:5,people:5,male:0,female:0,infants:0,under5:0,pregnant:0,deaths:0,missing:0},
+  {name:"Kanthale",families:139,people:448,male:218,female:230,infants:2,under5:30,pregnant:2,deaths:0,missing:0},
+  {name:"Kurunjakerni",families:299,people:1048,male:277,female:278,infants:6,under5:35,pregnant:5,deaths:0,missing:0},
+  {name:"Seruwila",families:536,people:1564,male:739,female:825,infants:10,under5:88,pregnant:4,deaths:0,missing:0},
+  {name:"Echilampathu",families:620,people:1795,male:518,female:555,infants:0,under5:25,pregnant:27,deaths:0,missing:0},
+  {name:"Kinniya",families:398,people:1168,male:544,female:624,infants:23,under5:114,pregnant:11,deaths:0,missing:0},
+  {name:"Muthur",families:3046,people:9348,male:4299,female:4563,infants:12,under5:743,pregnant:52,deaths:0,missing:0},
+  {name:"Thambalagamam",families:0,people:0,male:0,female:0,infants:0,under5:0,pregnant:0,deaths:0,missing:0}
 ];
 
-// District totals (from your provided aggregated totals)
-const districtTotals = {
-  families: 5118,
-  people: 15534,
-  male: 6610,
-  female: 7094,
-  infants: 53,
-  under5: 1037,
-  pregnant: 101,
-  deaths: 0,
-  missing: 0
-};
-
-// Option A thresholds (people)
-function alertColorByPeople(n){
-  if(n>2000) return 'red';
-  if(n>=1000) return 'orange';
-  return 'green';
+/* ---------- MOH CARDS ---------- */
+function alertColor(p){
+  if(p>2000) return "var(--red)";
+  if(p>=1000) return "var(--orange)";
+  return "var(--green)";
 }
 
-// Utility to format numbers with thousand separators
-function fmt(n){ return (n===0||n) ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : (n ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "-"); }
+const cardsGrid = document.getElementById("cardsGrid");
+mohData.forEach(m=>{
+  const div=document.createElement("div");
+  div.className="moh-card";
+  div.style.borderLeftColor=alertColor(m.people);
+  div.innerHTML = `
+    <h3>${m.name}</h3>
+    <p>Families: ${m.families}</p>
+    <p>People: ${m.people}</p>
+    <p>Male: ${m.male} • Female: ${m.female}</p>
+    <p>Infants: ${m.infants} • Under 5: ${m.under5}</p>
+    <p>Pregnant: ${m.pregnant}</p>
+  `;
+  cardsGrid.appendChild(div);
+});
 
-// Populate MOH select dropdown
-const select = document.getElementById('mohSelect');
-(function populateSelect(){
-  mohData.forEach(m=>{
-    const opt = document.createElement('option');
-    opt.value = m.name;
-    opt.textContent = m.name;
-    select.appendChild(opt);
-  });
-})();
+/* ---------- TABLE ---------- */
+const tableBody=document.getElementById("tableBody");
+mohData.forEach(m=>{
+  const tr=document.createElement("tr");
+  tr.innerHTML = `
+    <td>${m.name}</td>
+    <td>${m.families}</td>
+    <td>${m.people}</td>
+    <td>${m.male}</td>
+    <td>${m.female}</td>
+    <td>${m.infants}</td>
+    <td>${m.under5}</td>
+    <td>${m.pregnant}</td>
+    <td>${m.deaths}</td>
+    <td>${m.missing}</td>
+  `;
+  tableBody.appendChild(tr);
+});
 
-// Render MOH cards
-const cardsGrid = document.getElementById('cardsGrid');
-function renderCards(filter = 'All'){
-  cardsGrid.innerHTML = '';
-  const list = (filter==='All') ? mohData : mohData.filter(x=>x.name===filter);
-  list.forEach(m=>{
-    const color = alertColorByPeople(m.people);
-    let bg = (color==='red')? 'var(--red)' : (color==='orange')? 'var(--orange)' : 'var(--green)';
-    const card = document.createElement('div');
-    card.className='card moh-card';
-    card.style.borderLeft = `6px solid ${bg}`;
-    card.innerHTML = `
-      <div style="flex:1;">
-        <div style="font-weight:800; font-size:15px;">${m.name}</div>
-        <div style="font-size:13px; color:var(--muted); margin-top:6px;">Families ${fmt(m.families)} • People ${fmt(m.people)}</div>
-      </div>
-      <div style="text-align:right;">
-        <div class="badge" style="background:${bg}">${m.people>2000 ? 'HIGH' : (m.people>=1000 ? 'MOD' : 'LOW')}</div>
-        <div style="font-size:12px; color:var(--muted); margin-top:6px;">Male ${fmt(m.male)} / F ${fmt(m.female)}</div>
-      </div>
-    `;
-    cardsGrid.appendChild(card);
-  });
-}
-
-// Populate table
-const tableBody = document.getElementById('tableBody');
-function renderTable(filter='All'){
-  tableBody.innerHTML = '';
-  const rows = (filter==='All') ? mohData : mohData.filter(x=>x.name===filter);
-  rows.forEach(r=>{
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td style="text-align:left; padding-left:18px;">${r.name}</td>
-      <td>${fmt(r.families)}</td>
-      <td>${fmt(r.people)}</td>
-      <td>${fmt(r.male)}</td>
-      <td>${fmt(r.female)}</td>
-      <td>${fmt(r.infants)}</td>
-      <td>${fmt(r.under5)}</td>
-      <td>${fmt(r.pregnant)}</td>
-      <td>${fmt(r.deaths)}</td>
-      <td>${fmt(r.missing)}</td>
-    `;
-    tableBody.appendChild(tr);
-  });
-}
-
-// Charts: Bar (people by MOH) and Pie (gender split)
-let barChart, pieChart;
-function createCharts(){
-  const ctxB = document.getElementById('barChart').getContext('2d');
-  const labels = mohData.map(m=>m.name);
-  const dataPeople = mohData.map(m=>m.people);
-  const barColors = mohData.map(m=>{
-    const c = alertColorByPeople(m.people);
-    return (c==='red') ? 'rgba(231,76,60,0.9)' : (c==='orange') ? 'rgba(243,156,18,0.9)' : 'rgba(46,204,113,0.9)';
-  });
-
-  barChart = new Chart(ctxB, {
-    type:'bar',
-    data:{
-      labels,
-      datasets:[{
-        label:'People',
-        data: dataPeople,
-        backgroundColor: barColors,
-        borderRadius:6,
-        barThickness:24
-      }]
-    },
-    options:{
-      responsive:true,
-      maintainAspectRatio:false,
-      plugins:{
-        legend:{ display:false },
-        tooltip:{ mode:'index', intersect:false }
-      },
-      scales:{
-        x:{ ticks:{ maxRotation:45, minRotation:0 }, grid:{ display:false } },
-        y:{ beginAtZero:true, grid:{ color:'#f1f7ff' } }
-      },
-      onClick(evt, elements){
-        // if bar clicked, set filter
-        if(elements.length>0){
-          const idx = elements[0].index;
-          const area = labels[idx];
-          select.value = area;
-          handleFilterChange();
-        }
-      }
+/* ---------- SINGLE BAR CHART ---------- */
+const ctx = document.getElementById("barChart").getContext("2d");
+new Chart(ctx,{
+  type:"bar",
+  data:{
+    labels:mohData.map(m=>m.name),
+    datasets:[{
+      label:"People",
+      data:mohData.map(m=>m.people),
+      backgroundColor:mohData.map(m=>{
+        let c=alertColor(m.people);
+        if(c==="var(--green)") return "rgba(46,204,113,0.9)";
+        if(c==="var(--orange)") return "rgba(243,156,18,0.9)";
+        return "rgba(231,76,60,0.9)";
+      }),
+      borderRadius:8
+    }]
+  },
+  options:{
+    plugins:{legend:{display:false}},
+    scales:{
+      y:{beginAtZero:true}
     }
-  });
-
-  const ctxP = document.getElementById('pieChart').getContext('2d');
-  pieChart = new Chart(ctxP, {
-    type:'doughnut',
-    data:{
-      labels:['Male','Female'],
-      datasets:[{
-        data: [districtTotals.male, districtTotals.female],
-        backgroundColor: ['rgba(10,83,190,0.9)','rgba(30,144,255,0.6)'],
-        borderWidth:0
-      }]
-    },
-    options:{
-      responsive:true,
-      maintainAspectRatio:false,
-      plugins:{
-        legend:{ position:'bottom' },
-        tooltip:{ callbacks:{ label: (ctx)=> `${ctx.label}: ${fmt(ctx.raw)} (${Math.round(ctx.raw / (districtTotals.people||1) *100)}%)` } }
-      }
-    }
-  });
-}
-
-// Update charts when filter changes
-function updateChartsFor(filter){
-  // bar: highlight selected bar (increase opacity)
-  const idx = mohData.findIndex(m=>m.name===filter);
-  if(typeof barChart !== 'undefined'){
-    barChart.data.datasets[0].backgroundColor = mohData.map((m,i)=>{
-      const base = alertColorByPeople(m.people);
-      const col = (base==='red') ? 'rgba(231,76,60,0.9)' : (base==='orange') ? 'rgba(243,156,18,0.9)' : 'rgba(46,204,113,0.9)';
-      return (filter==='All' || i===idx) ? col : col.replace('0.9','0.28');
-    });
-    barChart.update();
   }
-
-  // pie: set to selected MOH male/female or district totals
-  const target = (filter==='All') ? districtTotals : (mohData.find(m=>m.name===filter) || {male:0,female:0,people:0});
-  pieChart.data.datasets[0].data = [target.male, target.female];
-  pieChart.update();
-
-  // update gender title and districtPeople label
-  document.getElementById('genderTitle').textContent = `Gender split — ${filter}`;
-  document.getElementById('districtPeople').textContent = `${fmt((filter==='All')?districtTotals.people:(target.people||0))} People`;
-}
-
-// Filter handler
-function handleFilterChange(){
-  const val = select.value;
-  renderCards(val);
-  renderTable(val);
-  updateChartsFor(val);
-}
-
-// Init
-renderCards('All');
-renderTable('All');
-createCharts();
-updateChartsFor('All');
-
-// Hook select change
-select.addEventListener('change', handleFilterChange);
-
-// Accessibility: allow keyboard selection by Enter
-select.addEventListener('keyup', (e)=>{ if(e.key==='Enter') handleFilterChange(); });
-
+});
 </script>
+
 </body>
 </html>
