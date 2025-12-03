@@ -18,6 +18,9 @@
                         'primary': '#059669', // Emerald Green
                         'secondary': '#1d4ed8', // Blue
                         'accent': '#f59e0b', // Amber
+                        'vulnerable-infants': '#38bdf8', // Sky Blue
+                        'vulnerable-under5': '#0ea5e9', // Light Blue
+                        'vulnerable-pregnant': '#ec4899', // Pink
                         'background-light': '#f9fafb',
                     }
                 }
@@ -25,13 +28,10 @@
         }
     </script>
     <style>
-        /* Custom styles for the data visualization and table aesthetics */
-        .data-bar {
+        /* Custom styles for visualization and aesthetics */
+        .data-bar, .stack-segment {
             transition: width 0.8s ease-out;
-        }
-        .scroll-shadow {
-            /* Adds a subtle shadow on the sides for scrollable content */
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            height: 100%;
         }
         .table-container {
             max-height: 80vh; /* Limit height for responsiveness */
@@ -42,6 +42,56 @@
             width: 96px;
             height: 96px;
             color: white;
+        }
+        
+        /* --- Styles for Vertical Bar Chart (New) --- */
+        .vertical-chart-container {
+            display: flex;
+            align-items: flex-end; /* Bars start from bottom */
+            height: 300px; /* Fixed height for visual consistency */
+            padding-bottom: 40px; /* Space for X-axis labels */
+            border-left: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            overflow-x: auto; /* Allows scrolling if many bars on mobile */
+            gap: 4px; /* Space between bars */
+        }
+        .vertical-bar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            position: relative;
+            min-width: 50px; /* Ensure bars are visible on mobile */
+            flex-shrink: 0; /* Prevents shrinking on overflow */
+        }
+        .vertical-bar {
+            width: 80%;
+            transition: height 0.8s ease-out;
+            position: relative;
+        }
+        .rotated-label {
+            position: absolute;
+            bottom: -35px; /* Position below the X-axis line */
+            font-size: 0.75rem; /* text-xs */
+            color: #4b5563; /* text-gray-600 */
+            text-align: right;
+            transform: rotate(-45deg); /* Rotate for legibility */
+            transform-origin: 100% 50%; /* Rotate from the bottom-right corner */
+            white-space: nowrap;
+            padding-right: 5px;
+        }
+
+        /* Mobile optimization for horizontal stacked bar labels */
+        @media (max-width: 640px) {
+            .moh-label {
+                width: 100%;
+                text-align: left;
+                margin-bottom: 0.25rem; /* space-y-1 */
+            }
+            .viz-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
@@ -54,9 +104,8 @@
         <header class="text-center">
             <div class="bg-primary shadow-2xl rounded-xl p-6 sm:p-10 text-white transform hover:scale-[1.01] transition duration-300">
                 
-                <!-- Logo Placeholder (Replacing external image path with a relevant icon) -->
+                <!-- Logo Placeholder -->
                 <div class="flex justify-center mb-4">
-                    <!-- Placeholder for: TrincoDisaster2025/images/icon-192 (1).png -->
                     <svg class="icon-svg fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                         <path d="M12 17V8"></path>
@@ -96,7 +145,7 @@
                 <span class="mr-2">📊</span> Situation Overview
             </h2>
             <p class="text-gray-600 text-lg">
-                This dashboard provides a concise summary of the welfare camp status across the Trincomalee District, based on data received from various Medical Officer of Health (MOH) areas on December 3rd, 2025. The data focuses on the count of affected people and vulnerable groups requiring immediate attention.
+                This dashboard provides a concise summary of the welfare camp status across the Trincomalee District, based on data received from various Medical Officer of Health (MOH) areas on December 3rd, 2025.
             </p>
 
             <!-- KPI Cards -->
@@ -105,20 +154,47 @@
             </div>
         </section>
 
-        <!-- Visualization Section: People by MOH Area (Simple Bar Chart) -->
+        <!-- Visualization Section 1: Affected Population (People) - NOW VERTICAL -->
         <section class="space-y-6">
             <h2 class="text-3xl font-bold text-gray-800 border-b-2 border-primary pb-2 flex items-center">
-                <span class="mr-2">📈</span> Affected Population by MOH Area
+                <span class="mr-2">👨‍👩‍👧‍👦</span> Affected Population (People) by MOH Area
             </h2>
-            <div id="moh-visualization" class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 space-y-4">
-                <!-- Bar chart visualization will be injected by JavaScript -->
+            <div id="moh-people-visualization" class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                <!-- Vertical Bar chart visualization will be injected by JavaScript -->
+            </div>
+        </section>
+        
+        <!-- Visualization Section 2: Families - NOW VERTICAL -->
+        <section class="space-y-6">
+            <h2 class="text-3xl font-bold text-gray-800 border-b-2 border-accent pb-2 flex items-center">
+                <span class="mr-2">🏘️</span> Families Displaced by MOH Area
+            </h2>
+            <div id="moh-families-visualization" class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                <!-- Vertical Bar chart visualization will be injected by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Visualization Section 3: Vulnerable Groups (Stacked Bar - Horizontal for Composition) -->
+        <section class="space-y-6">
+            <h2 class="text-3xl font-bold text-gray-800 border-b-2 border-secondary pb-2 flex items-center">
+                <span class="mr-2">🚨</span> Vulnerable Population Breakdown
+            </h2>
+            <!-- Legend for Stacked Chart -->
+            <div class="flex flex-wrap gap-4 text-sm font-semibold p-4 bg-white rounded-xl shadow-inner">
+                <div class="flex items-center"><span class="w-3 h-3 rounded-full mr-2 bg-vulnerable-infants"></span> Infants</div>
+                <div class="flex items-center"><span class="w-3 h-3 rounded-full mr-2 bg-vulnerable-under5"></span> Under 5</div>
+                <div class="flex items-center"><span class="w-3 h-3 rounded-full mr-2 bg-vulnerable-pregnant"></span> Pregnant</div>
+            </div>
+            
+            <div id="moh-vulnerable-visualization" class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 space-y-6">
+                <!-- Stacked Bar chart visualization (Horizontal) will be injected by JavaScript -->
             </div>
         </section>
 
         <!-- Detailed Data Table -->
         <section class="space-y-6">
-            <h2 class="text-3xl font-bold text-gray-800 border-b-2 border-primary pb-2 flex items-center">
-                <span class="mr-2">📋</span> Detailed Welfare Camp Data (All Areas)
+            <h2 class="text-3xl font-bold text-gray-800 border-b-2 border-gray-400 pb-2 flex items-center">
+                <span class="mr-2">📋</span> Detailed Welfare Camp Data
             </h2>
             
             <div class="table-container bg-white rounded-xl shadow-2xl">
@@ -130,10 +206,9 @@
                             <th class="px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider">People</th>
                             <th class="px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider hidden sm:table-cell">Male</th>
                             <th class="px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider hidden sm:table-cell">Female</th>
-                            <th class="px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider bg-secondary/80">Infants</th>
-                            <th class="px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider bg-secondary/80">Under 5</th>
-                            <th class="px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider bg-secondary/80 rounded-tr-xl">Pregnant</th>
-                            <!-- Hiding Deaths/Missing as they are all 0, but including them in data for completeness -->
+                            <th class="px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider bg-vulnerable-infants/80">Infants</th>
+                            <th class="px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider bg-vulnerable-under5/80">Under 5</th>
+                            <th class="px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider bg-vulnerable-pregnant/80 rounded-tr-xl">Pregnant</th>
                         </tr>
                     </thead>
                     <tbody id="data-table-body" class="bg-white divide-y divide-gray-100">
@@ -179,14 +254,111 @@
             return acc;
         }, { families: 0, people: 0, male: 0, female: 0, infants: 0, under5: 0, pregnant: 0, deaths: 0, missing: 0 });
 
+
+        // === VISUALIZATION FUNCTIONS ===
+
+        // Helper function for rendering a Vertical Bar (Column) Chart - Optimized for mobile
+        const renderVerticalBarChart = (containerId, dataKey, barColor, titleColor) => {
+            const container = document.getElementById(containerId);
+            // Add vertical chart specific class for styling
+            container.classList.add('vertical-chart-container');
+            container.innerHTML = '';
+            
+            // Filter out MOHs with zero data and sort by value for better visualization
+            const relevantData = disasterData
+                                .filter(d => d[dataKey] > 0)
+                                .sort((a, b) => b[dataKey] - a[dataKey]); // Sort descending
+            
+            if (relevantData.length === 0) {
+                container.innerHTML = `<p class="text-center w-full text-gray-500">No data available for this metric.</p>`;
+                return;
+            }
+
+            const maxVal = Math.max(...relevantData.map(d => d[dataKey]));
+
+            relevantData.forEach(item => {
+                const heightPercentage = (item[dataKey] / maxVal) * 95; // Use 95% of container height for max bar height
+                
+                const barHtml = `
+                    <div class="vertical-bar-item group" style="height: 100%;" title="${item.moh}: ${item[dataKey].toLocaleString()}">
+                        <!-- Data Label (Shown on hover/tap) -->
+                        <div class="absolute top-[-25px] text-xs font-bold text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                            ${item[dataKey].toLocaleString()}
+                        </div>
+                        
+                        <!-- Bar -->
+                        <div class="vertical-bar rounded-t-lg ${barColor} shadow-md" style="height: ${heightPercentage.toFixed(2)}%;">
+                        </div>
+                        
+                        <!-- MOH Label (Rotated for mobile readability) -->
+                        <div class="rotated-label ${titleColor}" title="${item.moh}">
+                            ${item.moh}
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += barHtml;
+            });
+        };
+        
+        // Function for rendering the Stacked Bar Chart for Vulnerable Groups (kept horizontal for composition clarity)
+        const renderVulnerableGroupsVisualization = () => {
+            const container = document.getElementById('moh-vulnerable-visualization');
+            container.innerHTML = '';
+
+            const vulnerableData = disasterData.map(d => ({
+                moh: d.moh,
+                infants: d.infants,
+                under5: d.under5,
+                pregnant: d.pregnant,
+                total: d.infants + d.under5 + d.pregnant
+            })).filter(d => d.total > 0)
+               .sort((a, b) => b.total - a.total); // Sort descending
+
+            if (vulnerableData.length === 0) {
+                container.innerHTML = `<p class="text-center text-gray-500">No vulnerable population reported in any area.</p>`;
+                return;
+            }
+
+            const maxVulnerable = Math.max(...vulnerableData.map(d => d.total));
+
+            vulnerableData.forEach(item => {
+                const totalPercentage = (item.total / maxVulnerable) * 100;
+                
+                const barHtml = `
+                    <div class="viz-item flex flex-col sm:flex-row items-start sm:items-center space-y-1 sm:space-y-0 sm:space-x-4">
+                        <div class="moh-label w-full sm:w-40 text-sm font-semibold text-gray-700 truncate">${item.moh}</div>
+                        <div class="flex-grow w-full sm:w-auto bg-gray-200 rounded-full h-6 relative flex overflow-hidden shadow-inner" title="Total Vulnerable: ${item.total.toLocaleString()}">
+                            <div class="stack-segment ${item.infants > 0 ? 'bg-vulnerable-infants' : 'hidden'}" 
+                                 style="width: ${item.total > 0 ? (item.infants / item.total) * totalPercentage : 0}%;" 
+                                 title="Infants: ${item.infants}">
+                            </div>
+                            <div class="stack-segment ${item.under5 > 0 ? 'bg-vulnerable-under5' : 'hidden'}" 
+                                 style="width: ${item.total > 0 ? (item.under5 / item.total) * totalPercentage : 0}%;"
+                                 title="Under 5: ${item.under5}">
+                            </div>
+                            <div class="stack-segment ${item.pregnant > 0 ? 'bg-vulnerable-pregnant' : 'hidden'}" 
+                                 style="width: ${item.total > 0 ? (item.pregnant / item.total) * totalPercentage : 0}%;"
+                                 title="Pregnant: ${item.pregnant}">
+                            </div>
+                            <span class="absolute right-2 top-0.5 text-xs font-bold text-gray-800 pointer-events-none">
+                                ${item.total.toLocaleString()}
+                            </span>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += barHtml;
+            });
+        };
+
+        // === RENDER ALL ELEMENTS ON LOAD ===
+        
         // 2. Render KPI Cards
         const kpiMetrics = [
             { label: "Total Affected People", value: totals.people, icon: "👤", color: "bg-secondary", text: "text-white" },
             { label: "Total Families", value: totals.families, icon: "🏠", color: "bg-accent", text: "text-gray-800" },
-            { label: "Vulnerable: Infants", value: totals.infants, icon: "👶", color: "bg-sky-500", text: "text-white" },
-            { label: "Vulnerable: Under 5", value: totals.under5, icon: "🧒", color: "bg-sky-400", text: "text-gray-800" },
-            { label: "Vulnerable: Pregnant", value: totals.pregnant, icon: "🤰", color: "bg-pink-500", text: "text-white" },
-            
+            { label: "Vulnerable: Infants", value: totals.infants, icon: "👶", color: "bg-vulnerable-infants", text: "text-white" },
+            { label: "Vulnerable: Under 5", value: totals.under5, icon: "🧒", color: "bg-vulnerable-under5", text: "text-white" },
+            { label: "Vulnerable: Pregnant", value: totals.pregnant, icon: "🤰", color: "bg-vulnerable-pregnant", text: "text-white" },
         ];
         
         const kpiContainer = document.getElementById('kpi-cards');
@@ -201,30 +373,16 @@
             kpiContainer.innerHTML += card;
         });
 
-        // 3. Render MOH Area Visualization (Bar Chart)
-        const vizContainer = document.getElementById('moh-visualization');
-        const maxPeople = Math.max(...disasterData.map(d => d.people));
+        // 3. Render all MOH Visualizations
+        // Now using the vertical bar chart function for better mobile experience
+        renderVerticalBarChart('moh-people-visualization', 'people', 'bg-primary/90', 'text-gray-700');
+        renderVerticalBarChart('moh-families-visualization', 'families', 'bg-accent/90', 'text-gray-700');
+        renderVulnerableGroupsVisualization();
 
-        disasterData.forEach(item => {
-            if (item.people > 0) {
-                const percentage = (item.people / maxPeople) * 100;
-                const barHtml = `
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-1 sm:space-y-0 sm:space-x-4">
-                        <div class="w-full sm:w-40 text-sm font-semibold text-gray-700 truncate">${item.moh}</div>
-                        <div class="flex-grow bg-gray-200 rounded-full h-5 relative">
-                            <div class="data-bar h-full rounded-full bg-primary/80 flex items-center justify-end pr-2 text-white text-xs font-bold" 
-                                style="width: ${percentage.toFixed(2)}%;">
-                                ${item.people.toLocaleString()}
-                            </div>
-                        </div>
-                    </div>
-                `;
-                vizContainer.innerHTML += barHtml;
-            }
-        });
 
         // 4. Render Detailed Data Table
         const tableBody = document.getElementById('data-table-body');
+        tableBody.innerHTML = ''; // Clear existing content
         disasterData.forEach((item, index) => {
             const rowClass = index % 2 === 0 ? 'bg-white hover:bg-gray-50' : 'bg-gray-50 hover:bg-gray-100';
             const rowHtml = `
@@ -234,9 +392,9 @@
                     <td class="px-3 py-3 whitespace-nowrap text-sm text-right font-extrabold text-secondary">${item.people.toLocaleString()}</td>
                     <td class="px-3 py-3 whitespace-nowrap text-sm text-right hidden sm:table-cell">${item.male.toLocaleString()}</td>
                     <td class="px-3 py-3 whitespace-nowrap text-sm text-right hidden sm:table-cell">${item.female.toLocaleString()}</td>
-                    <td class="px-3 py-3 whitespace-nowrap text-sm text-right font-medium bg-secondary/10 text-sky-700">${item.infants.toLocaleString()}</td>
-                    <td class="px-3 py-3 whitespace-nowrap text-sm text-right font-medium bg-secondary/10 text-sky-700">${item.under5.toLocaleString()}</td>
-                    <td class="px-3 py-3 whitespace-nowrap text-sm text-right font-medium bg-secondary/10 text-pink-600">${item.pregnant.toLocaleString()}</td>
+                    <td class="px-3 py-3 whitespace-nowrap text-sm text-right font-medium bg-vulnerable-infants/10 text-vulnerable-infants">${item.infants.toLocaleString()}</td>
+                    <td class="px-3 py-3 whitespace-nowrap text-sm text-right font-medium bg-vulnerable-under5/10 text-vulnerable-under5">${item.under5.toLocaleString()}</td>
+                    <td class="px-3 py-3 whitespace-nowrap text-sm text-right font-medium bg-vulnerable-pregnant/10 text-vulnerable-pregnant">${item.pregnant.toLocaleString()}</td>
                 </tr>
             `;
             tableBody.innerHTML += rowHtml;
@@ -244,6 +402,7 @@
 
         // Render Table Footer (Totals)
         const tableFooter = document.getElementById('data-table-footer');
+        tableFooter.innerHTML = ''; // Clear existing content
         const footerHtml = `
             <tr class="bg-gray-800 text-white font-bold text-base sticky bottom-0">
                 <td class="px-3 py-3 whitespace-nowrap rounded-bl-xl">TOTALS</td>
@@ -251,9 +410,9 @@
                 <td class="px-3 py-3 text-right">${totals.people.toLocaleString()}</td>
                 <td class="px-3 py-3 text-right hidden sm:table-cell">${totals.male.toLocaleString()}</td>
                 <td class="px-3 py-3 text-right hidden sm:table-cell">${totals.female.toLocaleString()}</td>
-                <td class="px-3 py-3 text-right bg-secondary/90">${totals.infants.toLocaleString()}</td>
-                <td class="px-3 py-3 text-right bg-secondary/90">${totals.under5.toLocaleString()}</td>
-                <td class="px-3 py-3 text-right bg-secondary/90 rounded-br-xl">${totals.pregnant.toLocaleString()}</td>
+                <td class="px-3 py-3 text-right bg-vulnerable-infants/90">${totals.infants.toLocaleString()}</td>
+                <td class="px-3 py-3 text-right bg-vulnerable-under5/90">${totals.under5.toLocaleString()}</td>
+                <td class="px-3 py-3 text-right bg-vulnerable-pregnant/90 rounded-br-xl">${totals.pregnant.toLocaleString()}</td>
             </tr>
         `;
         tableFooter.innerHTML += footerHtml;
