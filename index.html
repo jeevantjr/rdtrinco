@@ -44,43 +44,6 @@
             color: white;
         }
         
-        /* --- Styles for Vertical Bar Chart (New) --- */
-        .vertical-chart-container {
-            display: flex;
-            align-items: flex-end; /* Bars start from bottom */
-            height: 300px; /* Fixed height for visual consistency */
-            padding-bottom: 40px; /* Space for X-axis labels */
-            border-left: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
-            overflow-x: auto; /* Allows scrolling if many bars on mobile */
-            gap: 4px; /* Space between bars */
-        }
-        .vertical-bar-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            position: relative;
-            min-width: 50px; /* Ensure bars are visible on mobile */
-            flex-shrink: 0; /* Prevents shrinking on overflow */
-        }
-        .vertical-bar {
-            width: 80%;
-            transition: height 0.8s ease-out;
-            position: relative;
-        }
-        .rotated-label {
-            position: absolute;
-            bottom: -35px; /* Position below the X-axis line */
-            font-size: 0.75rem; /* text-xs */
-            color: #4b5563; /* text-gray-600 */
-            text-align: right;
-            transform: rotate(-45deg); /* Rotate for legibility */
-            transform-origin: 100% 50%; /* Rotate from the bottom-right corner */
-            white-space: nowrap;
-            padding-right: 5px;
-        }
-
         /* Mobile optimization for horizontal stacked bar labels */
         @media (max-width: 640px) {
             .moh-label {
@@ -154,27 +117,27 @@
             </div>
         </section>
 
-        <!-- Visualization Section 1: Affected Population (People) - NOW VERTICAL -->
+        <!-- Visualization Section 1: Affected Population (People) - NOW PIE CHART -->
         <section class="space-y-6">
             <h2 class="text-3xl font-bold text-gray-800 border-b-2 border-primary pb-2 flex items-center">
-                <span class="mr-2">👨‍👩‍👧‍👦</span> Affected Population (People) by MOH Area
+                <span class="mr-2">👨‍👩‍👧‍👦</span> Affected Population (People) Distribution
             </h2>
             <div id="moh-people-visualization" class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-                <!-- Vertical Bar chart visualization will be injected by JavaScript -->
+                <!-- Pie Chart visualization will be injected by JavaScript -->
             </div>
         </section>
         
-        <!-- Visualization Section 2: Families - NOW VERTICAL -->
+        <!-- Visualization Section 2: Families - NOW PIE CHART -->
         <section class="space-y-6">
             <h2 class="text-3xl font-bold text-gray-800 border-b-2 border-accent pb-2 flex items-center">
-                <span class="mr-2">🏘️</span> Families Displaced by MOH Area
+                <span class="mr-2">🏘️</span> Families Displaced Distribution
             </h2>
             <div id="moh-families-visualization" class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-                <!-- Vertical Bar chart visualization will be injected by JavaScript -->
+                <!-- Pie Chart visualization will be injected by JavaScript -->
             </div>
         </section>
 
-        <!-- Visualization Section 3: Vulnerable Groups (Stacked Bar - Horizontal for Composition) -->
+        <!-- Visualization Section 3: Vulnerable Groups (Stacked Bar - Kept Horizontal for Composition Clarity) -->
         <section class="space-y-6">
             <h2 class="text-3xl font-bold text-gray-800 border-b-2 border-secondary pb-2 flex items-center">
                 <span class="mr-2">🚨</span> Vulnerable Population Breakdown
@@ -240,6 +203,17 @@
             { moh: "Thambalagamam", families: 0, people: 0, male: 0, female: 0, infants: 0, under5: 0, pregnant: 0, deaths: 0, missing: 0 }
         ];
 
+        // Custom color palette for pie charts
+        const PIE_COLORS = [
+            '#ef4444', // Red (Muthur - largest)
+            '#3b82f6', // Blue
+            '#10b981', // Emerald
+            '#f97316', // Orange
+            '#6366f1', // Indigo
+            '#4b5563' // Gray-600 (for 'Other MOH Areas')
+        ];
+        const TOP_N_SLICES = 5;
+
         // 1. Calculate Totals
         const totals = disasterData.reduce((acc, curr) => {
             acc.families += curr.families;
@@ -257,49 +231,123 @@
 
         // === VISUALIZATION FUNCTIONS ===
 
-        // Helper function for rendering a Vertical Bar (Column) Chart - Optimized for mobile
-        const renderVerticalBarChart = (containerId, dataKey, barColor, titleColor) => {
+        // Helper function for rendering a Pie Chart using SVG
+        const renderPieChart = (containerId, dataKey, chartTitle) => {
             const container = document.getElementById(containerId);
-            // Add vertical chart specific class for styling
-            container.classList.add('vertical-chart-container');
             container.innerHTML = '';
             
-            // Filter out MOHs with zero data and sort by value for better visualization
-            const relevantData = disasterData
-                                .filter(d => d[dataKey] > 0)
-                                .sort((a, b) => b[dataKey] - a[dataKey]); // Sort descending
-            
-            if (relevantData.length === 0) {
-                container.innerHTML = `<p class="text-center w-full text-gray-500">No data available for this metric.</p>`;
+            // 1. Prepare and Aggregate Data
+            const data = disasterData.map(d => ({
+                moh: d.moh,
+                value: d[dataKey]
+            })).filter(d => d.value > 0)
+              .sort((a, b) => b.value - a.value); // Sort descending
+
+            if (data.length === 0) {
+                container.innerHTML = `<p class="text-center w-full text-gray-500">No data available for ${chartTitle}.</p>`;
                 return;
             }
 
-            const maxVal = Math.max(...relevantData.map(d => d[dataKey]));
+            const totalValue = data.reduce((sum, d) => sum + d.value, 0);
+            
+            // Grouping: Take top N and combine the rest into 'Other'
+            let slices = data.slice(0, TOP_N_SLICES);
+            const otherSlices = data.slice(TOP_N_SLICES);
 
-            relevantData.forEach(item => {
-                const heightPercentage = (item[dataKey] / maxVal) * 95; // Use 95% of container height for max bar height
+            if (otherSlices.length > 0) {
+                const otherValue = otherSlices.reduce((sum, d) => sum + d.value, 0);
+                slices.push({ moh: "Other MOH Areas", value: otherValue });
+            }
+            
+            // 2. Generate Pie Slices (SVG)
+            const svgSize = 300;
+            const radius = svgSize / 2 - 10; // Minus 10 for padding
+            const center = svgSize / 2;
+            let startAngle = 0;
+            
+            // SVG and Labels Container Setup
+            const chartArea = document.createElement('div');
+            // Use flex-col on mobile and flex-row on desktop for responsive layout
+            chartArea.className = "flex flex-col md:flex-row items-center justify-center p-2 space-y-4 md:space-y-0 md:space-x-12";
+            
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute("width", svgSize);
+            svg.setAttribute("height", svgSize);
+            svg.setAttribute("viewBox", `0 0 ${svgSize} ${svgSize}`);
+            svg.className = "flex-shrink-0 shadow-xl rounded-full border border-gray-200";
+
+            const labelContainer = document.createElement('div');
+            labelContainer.className = "flex flex-col space-y-2 text-sm max-w-full md:max-w-sm w-full md:w-auto";
+            
+            slices.forEach((slice, index) => {
+                const percentage = (slice.value / totalValue);
+                const angle = percentage * 360;
+                const endAngle = startAngle + angle;
                 
-                const barHtml = `
-                    <div class="vertical-bar-item group" style="height: 100%;" title="${item.moh}: ${item[dataKey].toLocaleString()}">
-                        <!-- Data Label (Shown on hover/tap) -->
-                        <div class="absolute top-[-25px] text-xs font-bold text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                            ${item[dataKey].toLocaleString()}
-                        </div>
-                        
-                        <!-- Bar -->
-                        <div class="vertical-bar rounded-t-lg ${barColor} shadow-md" style="height: ${heightPercentage.toFixed(2)}%;">
-                        </div>
-                        
-                        <!-- MOH Label (Rotated for mobile readability) -->
-                        <div class="rotated-label ${titleColor}" title="${item.moh}">
-                            ${item.moh}
-                        </div>
+                // Skip if slice is too small to draw (less than 0.5 degree)
+                if (angle < 0.5) {
+                    startAngle = endAngle;
+                    return;
+                }
+
+                // Function to convert polar to cartesian coordinates
+                const getCoords = (angle) => {
+                    const radians = (angle - 90) * (Math.PI / 180);
+                    return [
+                        center + (radius * Math.cos(radians)),
+                        center + (radius * Math.sin(radians))
+                    ];
+                };
+                
+                const [x1, y1] = getCoords(startAngle);
+                const [x2, y2] = getCoords(endAngle);
+
+                const largeArcFlag = angle > 180 ? 1 : 0;
+                const color = PIE_COLORS[index % PIE_COLORS.length];
+                
+                // Define the SVG path (slice)
+                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                path.setAttribute("d", `M ${center},${center} L ${x1},${y1} A ${radius},${radius} 0 ${largeArcFlag},1 ${x2},${y2} Z`);
+                path.setAttribute("fill", color);
+                path.setAttribute("stroke", "white");
+                path.setAttribute("stroke-width", "1");
+                path.setAttribute("title", `${slice.moh}: ${slice.value.toLocaleString()} (${(percentage * 100).toFixed(1)}%)`);
+                path.style.transition = 'transform 0.3s';
+                
+                // Add hover effect to slightly pull the slice out
+                path.addEventListener('mouseenter', () => path.style.transform = 'scale(1.03)');
+                path.addEventListener('mouseleave', () => path.style.transform = 'scale(1)');
+                
+                svg.appendChild(path);
+                
+                // 3. Generate Labels
+                const percentageText = `${(percentage * 100).toFixed(1)}%`;
+                const labelText = `${slice.moh}: ${slice.value.toLocaleString()} (${percentageText})`;
+                const labelHtml = `
+                    <div class="flex items-center p-2 rounded-lg transition duration-150 hover:bg-gray-100/50" title="${slice.moh}">
+                        <span class="w-4 h-4 rounded-full mr-3 flex-shrink-0 shadow-sm" style="background-color: ${color};"></span>
+                        <span class="text-gray-800 font-medium">${labelText}</span>
                     </div>
                 `;
-                container.innerHTML += barHtml;
+                labelContainer.innerHTML += labelHtml;
+
+                startAngle = endAngle;
             });
+
+            chartArea.appendChild(svg);
+            chartArea.appendChild(labelContainer);
+            container.appendChild(chartArea);
+
+            // Add a note about the grouping
+            if (otherSlices.length > 0) {
+                const note = document.createElement('p');
+                note.className = "text-center text-xs text-gray-500 mt-4 px-4";
+                note.innerHTML = `Note: Smaller areas (constituting ${otherSlices.length} MOHs) are combined into 'Other MOH Areas' for a clearer visual distribution.`;
+                container.appendChild(note);
+            }
         };
-        
+
+
         // Function for rendering the Stacked Bar Chart for Vulnerable Groups (kept horizontal for composition clarity)
         const renderVulnerableGroupsVisualization = () => {
             const container = document.getElementById('moh-vulnerable-visualization');
@@ -373,10 +421,9 @@
             kpiContainer.innerHTML += card;
         });
 
-        // 3. Render all MOH Visualizations
-        // Now using the vertical bar chart function for better mobile experience
-        renderVerticalBarChart('moh-people-visualization', 'people', 'bg-primary/90', 'text-gray-700');
-        renderVerticalBarChart('moh-families-visualization', 'families', 'bg-accent/90', 'text-gray-700');
+        // 3. Render all MOH Visualizations (Now Pie Charts)
+        renderPieChart('moh-people-visualization', 'people', 'Affected Population (People)');
+        renderPieChart('moh-families-visualization', 'families', 'Families Displaced');
         renderVulnerableGroupsVisualization();
 
 
