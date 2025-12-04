@@ -538,5 +538,57 @@
         tableFooter.innerHTML += footerHtml;
 
     </script>
+
+    <style>
+    /* Define the keyframe animation */
+    @keyframes pulse-glow {
+        0% {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); /* Red-500 equivalent */
+            transform: scale(1);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            transform: scale(1.02);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            transform: scale(1);
+        }
+    }
+    
+    /* Apply the animation class */
+    .hero-pulse-button {
+        animation: pulse-glow 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+    }
+</style>
+
+<div class="flex justify-center my-10">
+    <a href="TrincoDisaster2025/HighRisk.html" 
+       class="
+            bg-red-600 
+            hover:bg-red-700 
+            text-white 
+            font-extrabold 
+            py-5 
+            px-12 
+            text-xl 
+            rounded-full 
+            shadow-2xl 
+            transition 
+            duration-500 
+            flex 
+            items-center 
+            gap-3
+            uppercase
+            tracking-wider
+            hero-pulse-button">
+        
+        <svg class="h-8 w-8 text-yellow-300 animate-bounce" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.305 3.25 1.953 3.25h14.706c1.648 0 2.813-1.75 1.948-3.25L12 2.25 2.997 16.126zM12 15.75h.007v.008H12v-.008z" />
+        </svg>
+        
+        <span class="z-10">View Critical High-Risk Dashboard</span>
+    </a>
+</div>
 </body>
 </html>
