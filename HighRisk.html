@@ -79,18 +79,25 @@
     </div>
 
     <script>
-        function authenticate(reportFile) {
-            const username = prompt("Enter username:");
-            const password = prompt("Enter password:");
-
-            // Using the provided credentials
-            if(username === "rdhs" && password === "trinco") {
-                window.location.href = reportFile; // Open the report
-            } else {
-                alert("Invalid credentials! Access denied.");
-            }
+    function authenticate(reportFile) {
+        // Check if already logged in for this session
+        if(sessionStorage.getItem("authenticated") === "true") {
+            window.location.href = reportFile; // Open report directly
+            return;
         }
-    </script>
+
+        const username = prompt("Enter username:");
+        const password = prompt("Enter password:");
+
+        if(username === "rdhs" && password === "trinco") {
+            sessionStorage.setItem("authenticated", "true"); // Remember for session
+            window.location.href = reportFile; // Open report
+        } else {
+            alert("Invalid credentials! Access denied.");
+        }
+    }
+</script>
+
 
 </body>
 </html>
