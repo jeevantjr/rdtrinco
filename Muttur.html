@@ -1,286 +1,251 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Muttur MOH — Disaster Report Dashboard (04 Dec 2025)</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Muttur MOH — Comprehensive Situation Summary (12/05/2025)</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <style>
-        :root {
-            /* Branding Colors */
-            --primary-blue: #4f46e5; /* indigo-600 */
-            --accent-red: #dc2626; /* red-600 for urgent */
-            --safe-green: #059669; /* emerald-600 for safe */
-            --text-default: #1f2937; /* slate-800 */
-            --text-faint: #6b7280; /* gray-500 */
-        }
-        html,body { 
-            font-family: 'Inter', sans-serif; 
-        }
-        .faint { color: var(--text-faint); }
-        
-        /* Main Container Style (Soft Gradient Background) */
-        .dashboard-container {
-            background-image: linear-gradient(to bottom right, #f8faff, #ffffff);
-            min-height: 100vh;
-        }
-
-        /* Hero Card Style (Elevated and transparent) */
-        .hero-card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-
-        /* Table Styling */
-        .data-table-row:nth-child(even) {
-            background-color: #f7f9fc; /* Very light blue for subtle zebra striping */
-        }
-        .table-header-theme {
-            background-color: var(--primary-blue);
-            color: #ffffff;
-            font-weight: 600;
-        }
-    </style>
+  <style>
+    body { font-family: Inter, ui-sans-serif, system-ui; }
+    .light-bg {
+      background: linear-gradient(135deg, #ebf5ff 0%, #ffffff 100%);
+    }
+    .glass {
+      background: rgba(255,255,255,0.75);
+      border: 1px solid rgba(0,0,0,0.06);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    .zebra tbody tr:nth-child(odd) { background: rgba(0,0,0,0.04); }
+  </style>
 </head>
-<body class="dashboard-container p-8">
-    <div class="max-w-7xl mx-auto">
-        
-        <header class="mb-10 p-6 bg-white rounded-2xl shadow-lg border-t-4 border-indigo-600">
-            <div class="flex flex-wrap items-center justify-between gap-6">
-                <div class="flex items-center gap-4">
-                    <div class="p-4 rounded-xl bg-indigo-100 shadow-inner">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-indigo-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 21.5c-5.5 0-10-4.5-10-10S6.5 1.5 12 1.5s10 4.5 10 10-4.5 10-10 10z"/><path d="M12 17a5 5 0 005-5H7a5 5 0 005 5z"/>
-                        </svg>
-                    </div>
 
-                    <div>
-                        <h1 class="text-3xl font-extrabold text-slate-900">Muttur MOH — Disaster Situation Report</h1>
-                        <p class="muted mt-1 text-sm faint">Report Date: <span class="font-medium text-slate-700">04 December 2025</span> | Reported by <span class="font-medium">I. M. Rinoos (SPHI)</span></p>
-                    </div>
-                </div>
+<body class="light-bg min-h-screen text-gray-800">
 
-                <div class="text-right px-6 py-3 rounded-xl bg-red-50 border border-red-200">
-                    <div class="text-sm font-medium text-red-600 uppercase tracking-wider">Total Affected Population</div>
-                    <div class="text-4xl font-black text-red-800">8,469</div>
-                </div>
-            </div>
-        </header>
+  <div class="max-w-6xl mx-auto px-4 py-10">
 
-        <section class="grid lg:grid-cols-12 gap-8">
-            
-            <div class="lg:col-span-9 space-y-8">
-                
-                <div class="grid grid-cols-4 gap-5">
-                    <div class="p-6 bg-indigo-50/70 rounded-xl border border-indigo-100 shadow-md">
-                        <div class="text-base font-semibold text-indigo-600">Total Welfare Camps</div>
-                        <div class="text-4xl font-extrabold text-indigo-800 mt-2">21</div>
-                    </div>
-                    <div class="p-6 bg-white rounded-xl border border-slate-200 shadow-md">
-                        <div class="text-base font-semibold faint">Families Displaced</div>
-                        <div class="text-4xl font-extrabold text-slate-900 mt-2">2,580</div>
-                    </div>
-                    <div class="p-6 bg-white rounded-xl border border-slate-200 shadow-md">
-                        <div class="text-base font-semibold faint">Individuals in Camps</div>
-                        <div class="text-4xl font-extrabold text-slate-900 mt-2">8,469</div>
-                    </div>
-                    <div class="p-6 bg-red-100/70 rounded-xl border border-red-200 shadow-md">
-                        <div class="text-base font-semibold text-red-600">Reported Deaths</div>
-                        <div class="text-4xl font-extrabold text-red-800 mt-2">0</div>
-                    </div>
-                </div>
+    <!-- HEADER -->
+    <header class="mb-8">
+      <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900">
+        Muttur — MOH Comprehensive Situation Summary
+      </h1>
+      <p class="text-gray-700 mt-1">
+        Report timestamp: <strong>12/5/2025 10:45 AM</strong> • Reporting Officer: 
+        <strong>I. M. Rinoos (SPHI)</strong>
+      </p>
 
-                <div class="p-6 hero-card rounded-2xl">
-                    <h3 class="text-xl font-bold text-slate-700 mb-4 border-b pb-2">Key Public Health Status</h3>
-                    <div class="flex flex-wrap gap-3">
-                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-base font-semibold">
-                            Leptospirosis Prophylaxis: <strong class="ml-2">Yes</strong>
-                        </span>
-                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-full text-base font-semibold">
-                            Doxycycline Given: <strong class="ml-2">7,000 Doses</strong>
-                        </span>
-                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-700 rounded-full text-base font-semibold">
-                            Suspected Dengue: <strong class="ml-2">1 Case</strong>
-                        </span>
-                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-yellow-50 text-yellow-700 rounded-full text-base font-semibold">
-                            Larval Surveys: <strong class="ml-2">Completed</strong>
-                        </span>
-                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-red-100 text-red-800 rounded-full text-base font-semibold">
-                            Water Chlorination: <strong class="ml-2">NO (Urgent)</strong>
-                        </span>
-                    </div>
-                </div>
-            </div>
+      <div class="flex gap-3 mt-4">
+        <a href="#" onclick="window.print()" 
+           class="px-4 py-2 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition">🖨️ Print</a>
 
-            <aside class="lg:col-span-3 space-y-6">
-                
-                <div class="p-6 bg-red-50 rounded-2xl shadow-lg border-2 border-red-300">
-                    <h3 class="text-xl font-bold text-red-700 mb-3 flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                        Urgent Supplies Required
-                    </h3>
-                    <ul class="mt-4 space-y-3 text-base font-medium text-slate-800">
-                        <li class="flex items-start gap-2">
-                            <span class="text-red-500 font-bold text-lg">•</span>
-                            <span>**Chlorine Supplies** for Water Sources</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="text-red-500 font-bold text-lg">•</span>
-                            <span>Additional **Doxycycline Tablets**</span>
-                        </li>
-                    </ul>
-                </div>
+        <a href="https://jeevantjr.github.io/TrincoDisaster2025/" target="_blank"
+           class="px-4 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-500 transition">⬅ Go to Home</a>
+      </div>
+    </header>
 
-                <div class="p-6 bg-indigo-50/70 rounded-2xl shadow-lg border-2 border-indigo-300">
-                    <h3 class="text-xl font-bold text-indigo-700 mb-3">Water & Sanitation</h3>
-                    <div class="mt-4 text-base space-y-2">
-                        <div><strong class="text-slate-800">Safe Water Supply:</strong> <span class="font-semibold text-amber-700">Partially available</span></div>
-                        <div><strong class="text-slate-800">Sanitation in Camps:</strong> <span class="font-semibold text-safe-green">Adequate</span></div>
-                        <div><strong class="text-slate-800">Chlorination Status:</strong> <span class="font-semibold text-red-600">Not being done</span></div>
-                    </div>
-                </div>
-            </aside>
-        </section>
+    <!-- SUMMARY CARDS -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
 
-        <div class="mt-10 hero-card rounded-2xl overflow-hidden shadow-2xl">
-            <div class="p-6 border-b border-slate-200">
-                <h3 class="text-2xl font-bold text-slate-900">Detailed Report Checklist</h3>
-                <p class="mt-1 faint">Complete data fields submitted by the field officer.</p>
-            </div>
+      <div class="glass p-4 rounded-xl shadow">
+        <p class="text-sm text-gray-600">Total affected population</p>
+        <p class="text-2xl font-bold text-gray-900">31,803</p>
+      </div>
 
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-slate-200">
-                    <thead>
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs uppercase tracking-wider table-header-theme w-1/3">Field / Question</th>
-                            <th class="px-6 py-3 text-left text-xs uppercase tracking-wider table-header-theme">Answer / Status</th>
-                        </tr>
-                    </thead>
+      <div class="glass p-4 rounded-xl shadow">
+        <p class="text-sm text-gray-600">Welfare camps</p>
+        <p class="text-2xl font-bold text-gray-900">7</p>
+        <p class="text-xs text-gray-600 mt-1">Families in camps: <strong>482</strong></p>
+      </div>
 
-                    <tbody class="divide-y divide-slate-100 text-slate-800">
-                        <tr class="data-table-row">
-                            <td class="px-6 py-3 text-sm faint">Date & Time of Report (Field Entry)</td>
-                            <td class="px-6 py-3 text-sm">04/12/2025 11:33:00</td>
-                        </tr>
-                        
-                        <tr class="data-table-row font-semibold bg-indigo-50/50">
-                            <td class="px-6 py-3 text-sm text-indigo-700">Total number of welfare camps</td>
-                            <td class="px-6 py-3 text-sm text-indigo-700">21</td>
-                        </tr>
-                        <tr class="data-table-row">
-                            <td class="px-6 py-3 text-sm faint">Number of reported AGE cases</td>
-                            <td class="px-6 py-3 text-sm font-bold text-safe-green">0</td>
-                        </tr>
-                        <tr class="data-table-row">
-                            <td class="px-6 py-3 text-sm faint">AGE outbreaks or suspected clusters?</td>
-                            <td class="px-6 py-3 text-sm font-bold text-safe-green">No</td>
-                        </tr>
-                        <tr class="data-table-row">
-                            <td class="px-6 py-3 text-sm faint">Number of suspected dengue cases</td>
-                            <td class="px-6 py-3 text-sm font-bold text-red-600">1</td>
-                        </tr>
-                        <tr class="data-table-row font-semibold">
-                            <td class="px-6 py-3 text-sm faint">Vector control activities</td>
-                            <td class="px-6 py-3 text-sm">Fogging, Larviciding, Source reduction, Awareness session</td>
-                        </tr>
-                        
-                        <tr class="data-table-row bg-yellow-50/50">
-                            <td class="px-6 py-3 text-sm font-medium text-amber-700">Are water sources being chlorinated?</td>
-                            <td class="px-6 py-3 text-sm font-bold text-red-600">No</td>
-                        </tr>
-                        <tr class="data-table-row">
-                            <td class="px-6 py-3 text-sm faint">Sanitation facilities in camps</td>
-                            <td class="px-6 py-3 text-sm">Adequate</td>
-                        </tr>
-                        <tr class="data-table-row">
-                            <td class="px-6 py-3 text-sm faint">Environmental health activities</td>
-                            <td class="px-6 py-3 text-sm">Waste disposal, Cleaning campaigns, Camp inspections</td>
-                        </tr>
+      <div class="glass p-4 rounded-xl shadow">
+        <p class="text-sm text-gray-600">Doxycycline prophylaxis</p>
+        <p class="text-2xl font-bold text-gray-900">9,000</p>
+      </div>
 
-                        <tr class="data-table-row font-semibold">
-                            <td class="px-6 py-3 text-sm faint">Postnatal mothers in affected areas/camps</td>
-                            <td class="px-6 py-3 text-sm">707</td>
-                        </tr>
-                        <tr class="data-table-row">
-                            <td class="px-6 py-3 text-sm faint">Any interruptions in routine MCH services?</td>
-                            <td class="px-6 py-3 text-sm">No</td>
-                        </tr>
-                        <tr class="data-table-row">
-                            <td class="px-6 py-3 text-sm faint">Mental health/psychosocial activities</td>
-                            <td class="px-6 py-3 text-sm">Counseling, Group sessions, Child activities</td>
-                        </tr>
-                        <tr class="data-table-row">
-                            <td class="px-6 py-3 text-sm faint">Beneficiaries covered (mental health)</td>
-                            <td class="px-6 py-3 text-sm">49</td>
-                        </tr>
-                        <tr class="data-table-row bg-red-50/50">
-                            <td class="px-6 py-3 text-sm font-bold text-red-700">Urgent needs or assistance required</td>
-                            <td class="px-6 py-3 text-sm font-bold text-red-700">Need Chlorine, Doxycycline tablets</td>
-                        </tr>
-                        <tr class="data-table-row">
-                            <td class="px-6 py-3 text-sm faint">Additional comments or observations</td>
-                            <td class="px-6 py-3 text-sm">—</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+      <div class="glass p-4 rounded-xl shadow">
+        <p class="text-sm text-gray-600">Health education participants</p>
+        <p class="text-2xl font-bold text-gray-900">1,720</p>
+      </div>
 
-            <div class="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between no-print">
-                <div class="text-sm faint">Report generated at: 04/12/2025 11:44:09</div>
-                <div class="flex items-center gap-3">
-                   <button id="printBtn" class="px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg text-sm font-semibold transition-all shadow-lg shadow-teal-200">
-    <i class="fa-solid fa-print mr-1"></i> Print / Save PDF
-</button>
+    </section>
 
-                    <button id="copyBtn" class="px-4 py-2 border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 rounded-lg text-sm font-medium transition-all shadow-md">
-                        Copy Summary
-                    </button>
-                </div>
-            </div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- LEFT COLUMN -->
+      <div class="glass p-6 rounded-xl shadow">
+
+        <h2 class="text-lg font-semibold text-gray-900">Welfare Camps</h2>
+
+        <ol class="list-decimal list-inside mt-3 text-gray-700 space-y-1">
+          <li>Al Hithaya M.V</li>
+          <li>Asraf Vid</li>
+          <li>Al Hilal CC</li>
+          <li>Vipulanantha Vid</li>
+          <li>Aman Nagar Ambal Vid</li>
+          <li>Ayisha Vid</li>
+          <li>Muthur Muslim Ladies College</li>
+        </ol>
+
+        <hr class="my-4 border-gray-300">
+
+        <h3 class="font-semibold text-sm text-gray-700">Quick Status</h3>
+        <ul class="mt-2 text-gray-700 space-y-1">
+          <li><strong>Safe water:</strong> Partially available</li>
+          <li><strong>Sanitation:</strong> Adequate</li>
+          <li><strong>Chlorination:</strong> Not done</li>
+          <li><strong>Deaths:</strong> 0</li>
+          <li><strong>Damaged health facilities:</strong> No</li>
+        </ul>
+
+        <hr class="my-4 border-gray-300">
+
+        <h3 class="font-semibold text-sm text-gray-700">Urgent Needs</h3>
+        <ul class="mt-2 text-gray-700">
+          <li>Clorin — <strong>200 kg</strong></li>
+          <li>Lysol — <strong>100 L</strong></li>
+        </ul>
+      </div>
+
+      <!-- RIGHT COLUMN – COMPLETE TABLE -->
+      <div class="lg:col-span-2 glass p-6 rounded-xl shadow">
+
+        <h2 class="text-lg font-semibold text-gray-900">Complete Detailed Report</h2>
+
+        <div class="overflow-auto mt-4 rounded-lg border border-gray-200">
+          <table class="min-w-full text-sm zebra">
+            <tbody>
+
+              <tr><td class="p-3 font-medium">Timestamp</td>
+                  <td class="p-3">12/5/2025 11:08:18</td></tr>
+
+              <tr><td class="p-3 font-medium">Reporting Officer</td>
+                  <td class="p-3">I. M. Rinoos — SPHI</td></tr>
+
+              <tr><td class="p-3 font-medium">Total affected population</td>
+                  <td class="p-3">31,803</td></tr>
+
+              <tr><td class="p-3 font-medium">Total number of welfare camps</td>
+                  <td class="p-3">7</td></tr>
+
+              <tr><td class="p-3 font-medium">List of welfare camps</td>
+                  <td class="p-3">Al Hithaya M.V, Asraf Vid, Al Hilal CC, Vipulanantha Vid, Aman Nagar Ambal Vid, Ayisha Vid, Muthur Muslim Ladies College</td></tr>
+
+              <tr><td class="p-3 font-medium">Families in camps</td>
+                  <td class="p-3">482</td></tr>
+
+              <tr><td class="p-3 font-medium">Individuals in camps</td>
+                  <td class="p-3">0</td></tr>
+
+              <tr><td class="p-3 font-medium">Deaths reported</td>
+                  <td class="p-3">0</td></tr>
+
+              <tr><td class="p-3 font-medium">Health facilities damaged?</td>
+                  <td class="p-3">No</td></tr>
+
+              <tr><td class="p-3 font-medium">AGE cases</td>
+                  <td class="p-3">0</td></tr>
+
+              <tr><td class="p-3 font-medium">AGE outbreaks?</td>
+                  <td class="p-3">No</td></tr>
+
+              <tr><td class="p-3 font-medium">Details of AGE</td>
+                  <td class="p-3">No cases</td></tr>
+
+              <tr><td class="p-3 font-medium">Suspected dengue cases</td>
+                  <td class="p-3">0</td></tr>
+
+              <tr><td class="p-3 font-medium">Confirmed dengue cases</td>
+                  <td class="p-3">0</td></tr>
+
+              <tr><td class="p-3 font-medium">Larval surveys conducted?</td>
+                  <td class="p-3">Yes</td></tr>
+
+              <tr><td class="p-3 font-medium">Vector control activities</td>
+                  <td class="p-3">Fogging, Larviciding, Source reduction, Awareness sessions</td></tr>
+
+              <tr><td class="p-3 font-medium">Notes on dengue surveillance</td>
+                  <td class="p-3">Yes</td></tr>
+
+              <tr><td class="p-3 font-medium">Leptospirosis prophylaxis?</td>
+                  <td class="p-3">Yes</td></tr>
+
+              <tr><td class="p-3 font-medium">Number given doxycycline</td>
+                  <td class="p-3">9,000</td></tr>
+
+              <tr><td class="p-3 font-medium">Leptospirosis cases?</td>
+                  <td class="p-3">None</td></tr>
+
+              <tr><td class="p-3 font-medium">Safe water availability</td>
+                  <td class="p-3">Partially available</td></tr>
+
+              <tr><td class="p-3 font-medium">Sanitation facilities</td>
+                  <td class="p-3">Adequate</td></tr>
+
+              <tr><td class="p-3 font-medium">Water sources chlorinated?</td>
+                  <td class="p-3">No</td></tr>
+
+              <tr><td class="p-3 font-medium">Water sources chlorinated (count)</td>
+                  <td class="p-3">0</td></tr>
+
+              <tr><td class="p-3 font-medium">Water purification tablets distributed</td>
+                  <td class="p-3">0</td></tr>
+
+              <tr><td class="p-3 font-medium">Tablet beneficiaries</td>
+                  <td class="p-3">0</td></tr>
+
+              <tr><td class="p-3 font-medium">Nutrition/food safety inspections</td>
+                  <td class="p-3">Yes</td></tr>
+
+              <tr><td class="p-3 font-medium">Food safety issues</td>
+                  <td class="p-3">None identified</td></tr>
+
+              <tr><td class="p-3 font-medium">Nutrition support provided</td>
+                  <td class="p-3">Yes</td></tr>
+
+              <tr><td class="p-3 font-medium">Mental health services</td>
+                  <td class="p-3">Counseling</td></tr>
+
+              <tr><td class="p-3 font-medium">Beneficiaries (mental health)</td>
+                  <td class="p-3">100</td></tr>
+
+              <tr><td class="p-3 font-medium">Antenatal mothers</td>
+                  <td class="p-3">8</td></tr>
+
+              <tr><td class="p-3 font-medium">Postnatal mothers</td>
+                  <td class="p-3">Not reported</td></tr>
+
+              <tr><td class="p-3 font-medium">Under-5 children</td>
+                  <td class="p-3">171</td></tr>
+
+              <tr><td class="p-3 font-medium">Interruptions in MCH services?</td>
+                  <td class="p-3">No</td></tr>
+
+              <tr><td class="p-3 font-medium">Environmental health activities</td>
+                  <td class="p-3">Waste disposal, Cleaning campaigns, Drain clearing, Camp inspections</td></tr>
+
+              <tr><td class="p-3 font-medium">Health education topics</td>
+                  <td class="p-3">Personal hygiene, Safe water, Food safety, Dengue prevention, Leptospirosis prevention, Waste management</td></tr>
+
+              <tr><td class="p-3 font-medium">Health education participants</td>
+                  <td class="p-3">1,720</td></tr>
+
+              <tr><td class="p-3 font-medium">Additional comments</td>
+                  <td class="p-3">Clorin – 200kg, Lysol – 100L</td></tr>
+
+            </tbody>
+          </table>
         </div>
-        
-        <footer class="mt-8 text-center text-xs faint">
-            <div>Prepared for **RDHS — Muttur MOH**. Data from daily situational update.</div>
-        </footer>
+
+      </div>
     </div>
 
-    <script>
-        document.getElementById('printBtn').addEventListener('click', function () {
-            window.print();
-        });
+    <footer class="mt-10 text-center text-gray-600 text-sm">
+      RDHS Trincomalee — Muttur MOH Report • 12/5/2025
+    </footer>
 
-        document.getElementById('copyBtn').addEventListener('click', async function () {
-            const summary = [
-                '*** DISASTER REPORT - MUTTUR MOH (04 DEC 2025) ***',
-                'Reported by: I. M. Rinoos (SPHI)',
-                '-------------------------------------------------',
-                'Total Affected Population: 8,469',
-                'Welfare Camps: 21 (Individuals: 8,469)',
-                'Deaths: 0',
-                'HEALTH INTERVENTION:',
-                '  - Leptospirosis Prophylaxis: YES (Doxycycline given: 7,000)',
-                '  - Suspected Dengue: 1 case',
-                'WASH CRITICAL STATUS:',
-                '  - Safe water: Partially available',
-                '  - Water Chlorination: NOT being done',
-                'URGENT NEEDS: Chlorine supplies, Doxycycline tablets'
-            ].join('\n');
-
-            try {
-                await navigator.clipboard.writeText(summary);
-                const btn = document.getElementById('copyBtn');
-                btn.innerText = 'Copied ✓';
-                setTimeout(() => btn.innerText = 'Copy Summary', 1800);
-            } catch (e) {
-                alert('Unable to copy to clipboard. Please select and copy the summary manually.');
-            }
-        });
-    </script>
+  </div>
 </body>
 </html>
