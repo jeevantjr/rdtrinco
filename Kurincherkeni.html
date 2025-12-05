@@ -1,330 +1,37 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Disaster Report – Kurincherkeni MOH Area</title>
-
-    <!-- Tailwind CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Google Font (Inter) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome (for icons) -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Loading...</title>
     <style>
-        :root {
-            /* Custom Teal/Cyan Branding */
-            --primary-teal: #14b8a6; /* teal-500 */
-            --accent-cyan: #06b6d4; /* cyan-500 */
-            --text-dark: #0f172a; /* slate-900 */
-            --text-faint: #64748b; /* slate-500 */
-        }
-        html,body { 
-            font-family: 'Inter', sans-serif; 
-        }
-        .faint { color: var(--text-faint); } 
-        
-        /* Main Page Background */
         body {
-            background: linear-gradient(135deg, #f0fdfa, #ecfdf5); /* Light mint/teal gradient */
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 50px;
+            background-color: #f4f4f4;
+            color: #333;
         }
-        
-        /* Main Card Style */
-        .report-card {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(8px);
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: auto;
         }
-
-        /* Table Styling */
-        .table-header-theme {
-            background-color: var(--primary-teal);
-            color: #ffffff;
-            font-weight: 700;
-        }
-        .data-table-row:nth-child(even) {
-            background-color: #f0fdfa; /* Very light teal for striping */
+        h1 {
+            color: #007bff; /* A nice blue color */
         }
     </style>
 </head>
+<body>
 
-<body class="min-h-screen p-6 md:p-10 flex justify-center">
-
-    <div class="w-full max-w-7xl">
-        
-        <!-- HEADER: Title, Icon, and Global Stats -->
-        <header class="mb-8 p-6 report-card rounded-2xl shadow-xl border-t-4 border-primary-teal">
-            <div class="flex flex-wrap items-center justify-between gap-6">
-                <!-- Title & Context -->
-                <div class="flex items-center gap-4">
-                    <!-- Attractive Icon -->
-                    <div class="p-4 rounded-xl bg-teal-100 shadow-inner">
-                        <i class="fa-solid fa-house-chimney-crack text-4xl text-primary-teal"></i>
-                    </div>
-
-                    <div>
-                        <h1 class="text-3xl font-extrabold text-text-dark">Kurincherkeni MOH — Situational Disaster Report</h1>
-                        <p class="muted mt-1 text-sm faint">Reported by: M. H. M. Uwais (SPHI) | Date of Incident: 11/04/2025</p>
-                    </div>
-                </div>
-
-                <!-- Key Metric: Affected Population -->
-                <div class="text-right px-6 py-3 rounded-xl bg-cyan-50 border border-cyan-300">
-                    <div class="text-sm font-medium text-cyan-700 uppercase tracking-wider">Total Affected Population</div>
-                    <div class="text-4xl font-black text-cyan-800">299</div>
-                </div>
-            </div>
-        </header>
-
-        <!-- MAIN CONTENT: Summary Dashboard -->
-        <section class="grid lg:grid-cols-12 gap-6 mb-10">
-            
-            <!-- COLUMN 1 (9/12): Core Stats and Health Highlights -->
-            <div class="lg:col-span-9 space-y-6">
-                
-                <!-- 1. Camp Summary Grid -->
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <div class="p-5 bg-white rounded-xl shadow-lg border-b-4 border-primary-teal">
-                        <div class="text-base font-semibold text-primary-teal">Welfare Camps</div>
-                        <div class="text-3xl font-extrabold text-text-dark mt-1">5</div>
-                    </div>
-                    <div class="p-5 bg-white rounded-xl shadow-lg border-b-4 border-teal-400">
-                        <div class="text-base font-semibold faint">Families Displaced</div>
-                        <div class="text-3xl font-extrabold text-text-dark mt-1">299</div>
-                    </div>
-                    <div class="p-5 bg-white rounded-xl shadow-lg border-b-4 border-teal-400">
-                        <div class="text-base font-semibold faint">Individuals in Camps</div>
-                        <div class="text-3xl font-extrabold text-text-dark mt-1">1,048</div>
-                    </div>
-                    <div class="p-5 bg-white rounded-xl shadow-lg border-b-4 border-green-500">
-                        <div class="text-base font-semibold text-green-700">Deaths Reported</div>
-                        <div class="text-3xl font-extrabold text-green-800 mt-1">0</div>
-                    </div>
-                </div>
-
-                <!-- 2. Health & Disease Status Badges -->
-                <div class="p-6 report-card rounded-2xl shadow-xl">
-                    <h3 class="text-xl font-bold text-text-dark mb-4 border-b pb-2">Disease & Intervention Status</h3>
-                    <div class="flex flex-wrap gap-3">
-                        <span class="inline-flex items-center gap-2 px-3 py-1.5 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-                            <i class="fa-solid fa-check"></i> Leptospirosis Prophylaxis: <strong class="ml-1">Yes</strong>
-                        </span>
-                        <span class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
-                            Doxycycline Given: <strong class="ml-1">1,300 Doses</strong>
-                        </span>
-                        <span class="inline-flex items-center gap-2 px-3 py-1.5 bg-red-100 text-red-800 rounded-full text-sm font-medium">
-                            <i class="fa-solid fa-viruses"></i> Suspected Dengue: <strong class="ml-1">0 Cases</strong>
-                        </span>
-                        <span class="inline-flex items-center gap-2 px-3 py-1.5 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
-                            Larval Surveys Conducted: <strong class="ml-1">No</strong>
-                        </span>
-                        <span class="inline-flex items-center gap-2 px-3 py-1.5 bg-primary-teal text-white rounded-full text-sm font-medium">
-                            Water Chlorination: <strong class="ml-1">Yes (35 Sources)</strong>
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- COLUMN 2 (3/12): Actionable Items -->
-            <aside class="lg:col-span-3 space-y-6">
-                
-                <!-- Urgent Needs Block -->
-                <div class="p-5 bg-red-50 rounded-2xl shadow-lg border-2 border-red-300">
-                    <h3 class="text-lg font-bold text-red-700 mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-truck-medical text-red-500"></i>
-                        Urgent Needs
-                    </h3>
-                    <div class="text-base font-medium text-slate-800 bg-white p-3 rounded-lg border border-red-200">
-                        **Mobile Clinic**
-                    </div>
-                </div>
-
-                <!-- WASH/Infrastructure Status Block -->
-                <div class="p-5 bg-yellow-50 rounded-2xl shadow-lg border-2 border-yellow-300">
-                    <h3 class="text-lg font-bold text-yellow-700 mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-house-damage text-yellow-500"></i>
-                        Infrastructure Status
-                    </h3>
-                    <div class="mt-2 text-base space-y-2">
-                        <div><strong class="text-slate-800">Damaged Facility:</strong> <span class="font-semibold text-red-600">Yes</span></div>
-                        <div><strong class="text-slate-800">Facility Details:</strong> <span class="font-medium text-red-800">Poovarasam Theevu Health Center</span></div>
-                    </div>
-                </div>
-            </aside>
-        </section>
-
-        <!-- FULL DETAIL TABLE -->
-        <div class="report-card rounded-2xl overflow-hidden shadow-2xl">
-            <div class="p-6 border-b border-slate-200">
-                <h3 class="text-2xl font-bold text-text-dark">Detailed Report Data Checklist</h3>
-                <p class="mt-1 faint">Complete fields submitted by M. H. M. Uwais (SPHI).</p>
-            </div>
-
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-slate-200">
-                    <thead>
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs uppercase tracking-wider table-header-theme w-1/3">Field / Question</th>
-                            <th class="px-6 py-3 text-left text-xs uppercase tracking-wider table-header-theme">Answer / Status</th>
-                        </tr>
-                    </thead>
-
-                    <tbody class="divide-y divide-slate-100 text-slate-800">
-                        <!-- Admin -->
-                        <tr class="data-table-row">
-                            <td class="px-6 py-3 text-sm faint">Timestamp (System)</td>
-                            <td class="px-6 py-3 text-sm">12/4/2025 14:07:37</td>
-                        </tr>
-                        <tr class="data-table-row">
-                            <td class="px-6 py-3 text-sm faint">MOH Area</td>
-                            <td class="px-6 py-3 text-sm font-semibold">Kurincherkeni</td>
-                        </tr>
-                        
-                        <!-- Population / Camp Metrics -->
-                        <tr class="data-table-row bg-teal-50/50">
-                            <td class="px-6 py-3 text-sm font-medium text-primary-teal">List of welfare camps</td>
-                            <td class="px-6 py-3 text-sm">T/kin igval vid, Mujahida Vid, Arafta M.V, An Najad M.V, Assafa M.V</td>
-                        </tr>
-                        <tr class="data-table-row">
-                            <td class="px-6 py-3 text-sm faint">Number of individuals in camps</td>
-                            <td class="px-6 py-3 text-sm font-extrabold">1,048</td>
-                        </tr>
-                        
-                        <!-- WASH & Environment -->
-                        <tr class="data-table-row bg-green-50/50">
-                            <td class="px-6 py-3 text-sm font-medium text-green-700">Availability of safe water / Sanitation</td>
-                            <td class="px-6 py-3 text-sm font-bold text-green-700">Available / Adequate</td>
-                        </tr>
-                        <tr class="data-table-row">
-                            <td class="px-6 py-3 text-sm faint">Water purification tablets distributed</td>
-                            <td class="px-6 py-3 text-sm">0</td>
-                        </tr>
-                        <tr class="data-table-row">
-                            <td class="px-6 py-3 text-sm faint">Environmental health activities</td>
-                            <td class="px-6 py-3 text-sm">Waste disposal, Cleaning campaigns, Drain clearing, Camp inspections</td>
-                        </tr>
-
-                        <!-- Disease Surveillance -->
-                        <tr class="data-table-row">
-                            <td class="px-6 py-3 text-sm faint">Reported AGE cases / Suspected leptospirosis</td>
-                            <td class="px-6 py-3 text-sm font-bold text-green-600">0 / No</td>
-                        </tr>
-                        <tr class="data-table-row">
-                            <td class="px-6 py-3 text-sm faint">Vector control activities (Dengue)</td>
-                            <td class="px-6 py-3 text-sm">Fogging, Source reduction (Additional: Yes)</td>
-                        </tr>
-                        <tr class="data-table-row">
-                            <td class="px-6 py-3 text-sm faint">Health education sessions / Participants</td>
-                            <td class="px-6 py-3 text-sm">6 Topics (Personal hygiene, etc.) / 4 Participants</td>
-                        </tr>
-                        
-                        <!-- MCH / Mental Health -->
-                        <tr class="data-table-row">
-                            <td class="px-6 py-3 text-sm faint">Antenatal / Postnatal mothers / Under-5 children</td>
-                            <td class="px-6 py-3 text-sm">0 / 0 / 0</td>
-                        </tr>
-                        <tr class="data-table-row">
-                            <td class="px-6 py-3 text-sm faint">Interruptions in routine MCH services?</td>
-                            <td class="px-6 py-3 text-sm font-bold text-green-600">No</td>
-                        </tr>
-                        <tr class="data-table-row bg-blue-50/50">
-                            <td class="px-6 py-3 text-sm font-medium text-blue-700">Mental health support / Beneficiaries</td>
-                            <td class="px-6 py-3 text-sm font-bold text-blue-700">Counseling / 75</td>
-                        </tr>
-                        
-                        <!-- Key Issues -->
-                        <tr class="data-table-row bg-red-50/50">
-                            <td class="px-6 py-3 text-sm font-bold text-red-700">URGENT Needs Requested</td>
-                            <td class="px-6 py-3 text-sm font-bold text-red-700">Mobile clinic</td>
-                        </tr>
-                        <tr class="data-table-row">
-                            <td class="px-6 py-3 text-sm faint">Additional comments</td>
-                            <td class="px-6 py-3 text-sm">—</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="p-4 border-t border-slate-200 bg-slate-50 flex flex-col sm:flex-row items-center justify-between gap-3 no-print">
-                <div class="text-sm faint">Report generated at: 12/4/2025 14:07:37 (Data from SPHI M. H. M. Uwais)</div>
-                <div class="flex items-center gap-3">
-                   <button id="printBtn" class="px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg text-sm font-semibold transition-all shadow-lg shadow-teal-200">
-    <i class="fa-solid fa-print mr-1"></i> Print / Save PDF
-</button>
-
-                    <button id="copyBtn" class="px-4 py-2 border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 rounded-lg text-sm font-medium transition-all shadow-md">
-                        <i class="fa-solid fa-copy mr-1"></i> Copy Summary
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- FOOTER -->
-        <footer class="mt-8 text-center text-xs faint">
-            <div>Prepared for **RDHS — Kurincherkeni MOH**. Timeliness and accuracy are essential for disaster response.</div>
-        </footer>
+    <div class="container">
+        <h1>⏳ We are currently waiting for the data...</h1>
+        <p>Please check back shortly for updates.</p>
+        <p>This page will be updated soon!</p>
     </div>
 
-    <!-- JavaScript for Button Functionality -->
-    <script>
-        document.getElementById('printBtn').addEventListener('click', function () {
-            window.print();
-        });
-
-        document.getElementById('copyBtn').addEventListener('click', async function () {
-            const summary = [
-                '*** DISASTER REPORT - KURINCHERKENI MOH (12 APR 2025) ***',
-                'Reported by: M. H. M. Uwais (SPHI)',
-                '-------------------------------------------------',
-                'Total Affected Population: 299',
-                'Individuals in Camps: 1,048 (5 Camps)',
-                'Deaths: 0',
-                'HEALTH STATUS:',
-                '  - AGE/Dengue/Leptospirosis Cases: 0',
-                '  - Leptospirosis Prophylaxis: YES (1,300 Doses given)',
-                'WASH STATUS (Good):',
-                '  - Safe water/Sanitation: Available/Adequate',
-                '  - Water Chlorination: YES (35 sources)',
-                'INFRASTRUCTURE/NEEDS:',
-                '  - Damaged Facility: Poovarasam Theevu Health Center',
-                '  - URGENT NEED: Mobile clinic'
-            ].join('\n');
-
-            try {
-                // Use navigator.clipboard.writeText if available, otherwise fallback
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    await navigator.clipboard.writeText(summary);
-                } else {
-                    // Fallback for environment constraints
-                    const textArea = document.createElement("textarea");
-                    textArea.value = summary;
-                    document.body.appendChild(textArea);
-                    textArea.focus();
-                    textArea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(textArea);
-                }
-                
-                const btn = document.getElementById('copyBtn');
-                btn.innerHTML = '<i class="fa-solid fa-check mr-1"></i> Copied!';
-                setTimeout(() => btn.innerHTML = '<i class="fa-solid fa-copy mr-1"></i> Copy Summary', 1800);
-            } catch (e) {
-                console.error('Failed to copy text: ', e);
-                // Custom modal/message box instead of alert()
-                const messageBox = document.createElement('div');
-                messageBox.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50';
-                messageBox.innerHTML = `
-                    <div class="bg-white p-6 rounded-lg shadow-2xl max-w-sm text-center">
-                        <p class="font-semibold text-lg text-red-600 mb-3">Copy Error</p>
-                        <p class="text-sm text-slate-700">Unable to copy to clipboard. Please select and copy the summary manually.</p>
-                        <button onclick="this.parentNode.parentNode.remove()" class="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg">Close</button>
-                    </div>
-                `;
-                document.body.appendChild(messageBox);
-            }
-        });
-    </script>
 </body>
 </html>
