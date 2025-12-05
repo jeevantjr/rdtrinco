@@ -3,106 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trincomalee Disaster Response Dashboard</title>
+    <title>Trincomalee District Disaster Response Dashboard</title>
+    <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Load Poppins Font for a professional look -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom Tailwind Configuration -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    colors: {
+                        'rdhs-blue': '#1a56db', // Stronger Blue
+                        'accent-primary': '#10b981', // Green for main accent/data success
+                        'accent-secondary': '#f97316', // Orange for urgency
+                        'bg-light': '#f3f4f6', // Lighter background
+                        'card-bg': '#ffffff',
+                    },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
+                        heading: ['Poppins', 'sans-serif'], // Poppins for main title
                     },
-                    colors: {
-                        'primary': '#059669', // Emerald Green
-                        'secondary': '#1d4ed8', // Blue
-                        'accent': '#f59e0b', // Amber
-                        'vulnerable-infants': '#38bdf8', // Sky Blue
-                        'vulnerable-under5': '#0ea5e9', // Light Blue
-                        'vulnerable-pregnant': '#ec4899', // Pink
-                        'background-light': '#f9fafb',
+                    boxShadow: {
+                        'custom': '0 10px 30px -5px rgba(26, 86, 219, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
                     }
                 }
             }
         }
     </script>
     <style>
-        /* Custom styles for visualization and aesthetics */
-        .data-bar, .stack-segment {
-            transition: width 0.8s ease-out;
-            height: 100%;
+        /* Custom styles for the table for better mobile UX */
+        .responsive-table th, .responsive-table td {
+            padding: 14px 20px;
+            text-align: left;
         }
-        .table-container {
-            max-height: 80vh; /* Limit height for responsiveness */
-            overflow-y: auto;
+        .responsive-table th {
+            letter-spacing: 0.05em;
         }
-        /* Custom icon SVG for the main header */
-        /* Shield/Cross Icon Size */
-        .icon-svg {
-            width: 80px; 
-            height: 80px;
-            color: #ef4444; /* Red for the cross */
-            fill: #ffffff; /* White background for the shield */
-            stroke: none;
+
+        /* Ensure icon rendering */
+        [lucide] {
+            stroke-width: 2.5;
         }
         
-        /* Mobile optimization for labels: not strictly necessary for pie charts, but kept for consistency */
-        @media (max-width: 640px) {
-            .moh-label {
-                width: 100%;
-                text-align: left;
-                margin-bottom: 0.25rem;
-            }
-            .viz-item {
-                flex-direction: column;
-                align-items: flex-start;
-            }
+        /* Highlighting for selected MOH filter */
+        #moh-filter-container button {
+            transition: all 0.2s ease-in-out;
+            border: 2px solid transparent;
+            /* Professional shadow effect for all buttons */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
+        #moh-filter-container button.selected {
+            background-color: var(--tw-colors-rdhs-blue);
+            color: white;
+            box-shadow: 0 4px 10px rgba(26, 86, 219, 0.4);
+            transform: translateY(-2px) scale(1.02);
+            border-color: white;
+        }
+
     </style>
 </head>
-<body class="bg-background-light font-sans p-4 sm:p-6 lg:p-10">
+<body class="bg-bg-light font-sans min-h-screen">
 
-    <div id="app" class="max-w-7xl mx-auto space-y-12">
+    <div id="dashboard-app" class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
 
-        <header class="text-center">
-            <div class="bg-primary shadow-2xl rounded-xl p-6 sm:p-10 text-white transform hover:scale-[1.01] transition duration-300">
-                
-                <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight mb-2 text-white">
-                    Trincomalee District Disaster Response Dashboard
+        <!-- Header and Banner - Centered, Larger Font -->
+        <header class="mb-10 p-6 bg-rdhs-blue text-white rounded-xl shadow-custom shadow-rdhs-blue/40 text-center">
+            <div class="space-y-2">
+                <h1 class="text-5xl md:text-6xl font-heading font-extrabold tracking-tighter">
+                    Trincomalee Disaster Response
                 </h1>
-                <p class="text-xl sm:text-2xl font-semibold opacity-90 text-accent">
-                    Real-time status of welfare camps
+                <p class="text-xl font-light opacity-90">
+                    Real-time Welfare Camp Status for RDHS
                 </p>
-
-                <div class="mt-4 pt-4 border-t border-white border-opacity-30">
-                    <p class="text-sm sm:text-lg font-medium text-white">
-                        Health Information Management Unit | Office of Regional Director of Health Services (RDHS)
-                    </p>
-                    <p class="text-lg font-light text-secondary bg-white inline-block px-3 py-1 rounded-full mt-1">
-                        Trincomalee
-                    </p>
-                </div>
-
-                <div class="mt-6 flex justify-center">
-                    <div id="data-date" class="inline-flex items-center text-sm sm:text-lg font-bold bg-white text-primary rounded-full px-6 py-3 shadow-2xl border-2 border-accent transform hover:scale-[1.05] transition duration-300 cursor-pointer">
-                        <svg class="w-5 h-5 mr-3 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 12h-2v2h2v-2zm-4 0h-2v2h2v-2zm-4 0H7v2h2v-2zm-3-7h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2zm14 2H4v3h14V7z"/></svg>
-                        Data Last Updated: **December 4th, 2025  12.00PM**
-                    </div>
+                <!-- INCREASED SIZE AND FONT FOR RDHS SUBHEADING -->
+                <div class="pt-4">
+                    <p class="text-xl md:text-2xl font-heading font-semibold text-yellow-300">Office of Regional Director of Health Services (RDHS)</p>
+                    <p class="text-sm">Health Information Management Unit</p>
                 </div>
             </div>
         </header>
 
-        <section class="space-y-6">
-            <h2 class="text-3xl font-bold text-gray-800 border-b-2 border-primary pb-2 flex items-center">
-                <span class="mr-2">📊</span> Situation Overview
-            </h2>
-            <p class="text-gray-600 text-lg">
-                This dashboard provides a concise summary of the welfare camp status across the Trincomalee District, based on data received from various Medical Officer of Health (MOH) areas on December 3rd, 2025.
+        <!-- Status Bar -->
+        <div id="status-bar" class="mb-8 p-4 bg-red-50 text-red-800 border-l-4 border-red-500 rounded-lg shadow-md flex items-center justify-between">
+            <div class="flex items-center">
+                <i lucide="alert-triangle" class="w-6 h-6 mr-3 flex-shrink-0 text-red-600"></i>
+                <span class="text-sm md:text-base font-bold uppercase tracking-wide">
+                    URGENT: OFFICIAL DATA CONFIRMATION REQUIRED
+                </span>
+            </div>
+            <p id="data-update-time" class="text-sm font-medium text-red-600 flex items-center">
+                <i lucide="clock" class="w-4 h-4 inline mr-1"></i>
+                Data Last Updated: <strong>Loading...</strong>
             </p>
-
-            <div id="kpi-cards" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                </div>
-        
-        <div class="flex justify-center my-10">
+        </div>
+ <div class="flex justify-center my-10">
     <a href="HighRisk.html" 
        class="
             bg-red-600 
@@ -130,467 +129,328 @@
         <span class="z-10">View Critical High-Risk Dashboard</span>
     </a>
 </div>
-        </section>
-
-        <section class="space-y-6">
-            <h2 class="text-3xl font-bold text-gray-800 border-b-2 border-primary pb-2 flex items-center">
-                <span class="mr-2">👨‍👩‍👧‍👦</span> Affected Population (People) Distribution
-            </h2>
-            <div id="moh-people-visualization" class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-                </div>
-        </section>
+        <!-- Summary Cards Section -->
+        <h2 class="text-3xl font-bold mb-6 text-accent-primary border-b-2 border-accent-primary/50 pb-2 flex items-center">
+            <i lucide="layout-dashboard" class="w-6 h-6 mr-3 text-accent-primary"></i>
+            Current Situation Overview
+        </h2>
+        <div id="summary-cards" class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+            <!-- Cards will be populated here by JavaScript -->
+        </div>
         
-        <section class="space-y-6">
-            <h2 class="text-3xl font-bold text-gray-800 border-b-2 border-accent pb-2 flex items-center">
-                <span class="mr-2">🚻</span> Gender Breakdown
-            </h2>
-            <div id="gender-distribution" class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-                </div>
-        </section>
-
-        <section class="space-y-6">
-            <h2 class="text-3xl font-bold text-gray-800 border-b-2 border-secondary pb-2 flex items-center">
-                <span class="mr-2">🚨</span> Vulnerable Population Distribution by MOH Area
-            </h2>
-            
-            <p class="text-gray-600 text-lg font-semibold">Distribution of each vulnerable group across the Medical Officer of Health (MOH) areas.</p>
-
-            <div id="vulnerable-pie-charts" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                
-                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-                    <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2 text-vulnerable-infants">👶 Infants (< 1 year) Distribution</h3>
-                    <div id="vulnerable-infants-chart"></div>
-                </div>
-                
-                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-                    <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2 text-vulnerable-under5">🧒 Children Under 5 Distribution</h3>
-                    <div id="vulnerable-under5-chart"></div>
-                </div>
-                
-                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-                    <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2 text-vulnerable-pregnant">🤰 Pregnant Mothers Distribution</h3>
-                    <div id="vulnerable-pregnant-chart"></div>
-                </div>
+        <!-- Interactive Visualization (MOH Filter) Section -->
+        <h2 class="text-3xl font-bold mb-6 mt-8 text-accent-secondary border-b-2 border-accent-secondary/50 pb-2 flex items-center">
+            <i lucide="filter" class="w-6 h-6 mr-3 text-accent-secondary"></i>
+            Filter Camp Data by MOH Area
+        </h2>
+        <div class="bg-card-bg p-6 rounded-xl shadow-custom border border-gray-100 mb-8">
+            <p class="text-lg font-medium mb-4 text-gray-700">Select an MOH Area to view camp details:</p>
+            <div id="moh-filter-container" class="flex flex-wrap gap-3">
+                <!-- MOH Filter Buttons will be populated here -->
             </div>
-        </section>
+        </div>
 
-        <section class="space-y-6">
-            <h2 class="text-3xl font-bold text-gray-800 border-b-2 border-gray-400 pb-2 flex items-center">
-                <span class="mr-2">📋</span> Detailed Welfare Camp Data
+        <!-- Camp Data Table Section - Enhanced Styling -->
+        <div class="bg-card-bg p-6 rounded-xl shadow-custom border border-gray-100">
+            <h2 class="text-xl font-bold mb-4 text-gray-800 flex items-center">
+                <i lucide="list-checks" class="w-6 h-6 mr-2 text-rdhs-blue"></i>
+                Detailed Welfare Camp Data <span id="current-moh-filter" class="ml-3 text-sm font-medium text-gray-500">(Showing All Camps)</span>
             </h2>
-            
-            <div class="table-container bg-white rounded-xl shadow-2xl">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="sticky top-0 bg-primary text-white shadow-md">
+            <div class="overflow-x-auto">
+                <table id="camp-data-table" class="min-w-full responsive-table bg-white rounded-lg">
+                    <thead class="bg-rdhs-blue/10 border-b-2 border-rdhs-blue/20">
                         <tr>
-                            <th class="px-3 py-3 text-left text-sm font-semibold uppercase tracking-wider rounded-tl-xl">MOH Area</th>
-                            <th class="px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider">Families</th>
-                            <th class="px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider">People</th>
-                            <th class="px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider hidden sm:table-cell">Male</th>
-                            <th class="px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider hidden sm:table-cell">Female</th>
-                            <th class="px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider bg-vulnerable-infants/80">Infants</th>
-                            <th class="px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider bg-vulnerable-under5/80">Under 5</th>
-                            <th class="px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider bg-vulnerable-pregnant/80 rounded-tr-xl">Pregnant Mothers</th>
+                            <th class="text-sm font-bold tracking-wider text-rdhs-blue uppercase">Center Name</th>
+                            <th class="text-sm font-bold tracking-wider text-rdhs-blue uppercase">MOH Area</th>
+                            <th class="text-sm font-bold tracking-wider text-gray-700 uppercase">Families</th>
+                            <th class="text-sm font-bold tracking-wider text-gray-700 uppercase">People</th>
+                            <th class="text-sm font-bold tracking-wider text-accent-primary uppercase">Infants</th>
+                            <th class="text-sm font-bold tracking-wider text-accent-primary uppercase">Under 5Y</th>
+                            <th class="text-sm font-bold tracking-wider text-accent-primary uppercase">Pregnant</th>
                         </tr>
                     </thead>
-                    <tbody id="data-table-body" class="bg-white divide-y divide-gray-100">
-                        </tbody>
-                    <tfoot id="data-table-footer">
-                        </tfoot>
+                    <tbody id="camp-data-body">
+                        <!-- Table rows will be populated here by JavaScript -->
+                    </tbody>
                 </table>
             </div>
-        </section>
+        </div>
 
-        <section class="mt-12 p-6 bg-red-100 rounded-xl border-4 border-red-500 shadow-2xl transform hover:scale-[1.01] transition duration-300">
-            <div class="flex items-center justify-center mb-3">
-                <svg class="w-8 h-8 text-red-600 mr-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                <h3 class="text-2xl font-extrabold text-red-700 tracking-wide">
-                    OFFICIAL DATA CONFIRMATION REQUIRED
-                </h3>
-            </div>
-            
-            <p class="text-xl text-red-800 text-center mb-5 font-semibold italic border-y border-red-300 py-3">
-                This dashboard is a **temporary field tool** to help health workers quickly understand the ground situation.
-            </p>
-            <p class="text-base text-gray-800 text-center">
-                For **official use or distribution**, you must obtain formal confirmation from the **RDHS office** via the contact details below.
-            </p>
-            
-            <div class="mt-5 pt-3 border-t border-red-300 text-sm text-center">
-                <p class="font-bold text-lg text-primary">Health Information Management Unit</p>
-                <p class="text-gray-700">Regional Director of Health Services, 120 Court Rd, Trincomalee</p>
-                <div class="flex flex-wrap items-center justify-center space-x-4 mt-2 font-bold text-gray-800">
-                    <span>📞 026 2222263</span>
-                    <span>| 📠 026 2220854</span>
-                    <span>| ✉️ trincomoinfo@gmail.com</span>
+        <!-- Footer and Contact Info - REDESIGNED WITH CARD BACKGROUND -->
+        <footer class="mt-12">
+            <div class="bg-card-bg p-6 rounded-xl shadow-custom border border-gray-100 text-center text-gray-600">
+                
+                <!-- Disclaimer Section -->
+                <div class="mb-6 pb-4 border-b border-gray-200">
+                    <p class="text-lg font-semibold text-gray-800 mb-2">
+                        <i lucide="briefcase" class="w-5 h-5 inline mr-2 text-accent-secondary"></i>
+                        Official Use Disclaimer
+                    </p>
+                    <p class="text-sm font-medium mb-3">
+                        This dashboard is a <span class="text-accent-secondary font-bold">temporary field tool</span> to help health workers quickly understand the ground situation.
+                    </p>
+                    <p class="text-sm">
+                        For <span class="font-bold text-rdhs-blue">official use or distribution</span>, you must obtain formal confirmation from the <span class="font-bold">RDHS office</span> via the contact details below.
+                    </p>
                 </div>
+
+                <!-- Contact Info Section - Differentiated -->
+                <div class="bg-rdhs-blue/5 p-4 rounded-lg border border-rdhs-blue/20 mb-6">
+                    <p class="text-md font-bold text-rdhs-blue mb-3 uppercase tracking-wider">RDHS Contact Information</p>
+                    <div class="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-8 text-sm">
+                        <p class="flex items-center justify-center font-medium text-gray-700">
+                            <i lucide="map-pin" class="w-4 h-4 mr-1 text-rdhs-blue flex-shrink-0"></i>
+                            120 Court Rd, Trincomalee
+                        </p>
+                        <p class="flex items-center justify-center font-medium text-gray-700">
+                            <i lucide="phone" class="w-4 h-4 mr-1 text-rdhs-blue flex-shrink-0"></i>
+                            026 2222263
+                        </p>
+                        <p class="flex items-center justify-center font-medium text-gray-700">
+                            <i lucide="mail" class="w-4 h-4 mr-1 text-rdhs-blue flex-shrink-0"></i>
+                            trincomoinfo@gmail.com
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Copyright -->
+                <p class="mt-4 pt-4 border-t border-gray-200 text-xs text-gray-500">
+                    © 2025 Trincomalee RDHS Health Information Management Unit. All Rights Reserved.
+                </p>
             </div>
-        </section>
-
-
-        <footer class="text-center text-sm text-gray-500 pt-6">
-            <p>&copy; 2025 Trincomalee RDHS Health Information Management Unit. All Rights Reserved.</p>
         </footer>
 
     </div>
 
     <script>
-   const disasterData = [
-    { moh: "Echilampathu", families: 620, people: 1795, male: 518, female: 555, infants: 0, under5: 25, pregnant: 27, deaths: 0, missing: 0 },
-    { moh: "Gomarankadawela", families: 10, people: 0, male: 0, female: 0, infants: 0, under5: 0, pregnant: 0, deaths: 0, missing: 0 },
-    { moh: "Kanthale", families: 139, people: 448, male: 218, female: 230, infants: 2, under5: 30, pregnant: 2, deaths: 0, missing: 0 },
-    { moh: "Kinniya", families: 398, people: 1168, male: 609, female: 618, infants: 21, under5: 114, pregnant: 11, deaths: 0, missing: 0 },
-    { moh: "Kuchaveli", families: 2, people: 10, male: 5, female: 5, infants: 0, under5: 2, pregnant: 0, deaths: 0, missing: 0 },
-    { moh: "Kurunjakerni", families: 299, people: 1048, male: 277, female: 278, infants: 6, under5: 35, pregnant: 5, deaths: 0, missing: 0 },
-    { moh: "Muthur", families: 3046, people: 9348, male: 3209, female: 3283, infants: 12, under5: 743, pregnant: 52, deaths: 0, missing: 0 },
-    { moh: "Padavisripura", families: 58, people: 122, male: 0, female: 0, infants: 0, under5: 0, pregnant: 0, deaths: 0, missing: 0 },
-    { moh: "Seruwila", families: 1029, people: 2920, male: 1347, female: 1573, infants: 20, under5: 169, pregnant: 7, deaths: 0, missing: 0 },
-    { moh: "Thambalagamam", families: 0, people: 0, male: 0, female: 0, infants: 0, under5: 0, pregnant: 0, deaths: 0, missing: 0 },
-    { moh: "Trincomalee", families: 5, people: 5, male: 0, female: 0, infants: 0, under5: 0, pregnant: 0, deaths: 0, missing: 0 },
-    { moh: "Uppuveli", families: 5, people: 26, male: 10, female: 14, infants: 0, under5: 0, pregnant: 0, deaths: 0, missing: 0 }
-];
-
-
-        // Custom color palette for pie charts
-        const PIE_COLORS = [
-            '#ef4444', // Red (Muthur - largest)
-            '#3b82f6', // Blue
-            '#10b981', // Emerald
-            '#f97316', // Orange
-            '#6366f1', // Indigo
-            '#4b5563' // Gray-600 (for 'Other MOH Areas')
+        // Data Structure based on uploaded files and MOH areas
+        const RAW_CAMP_DATA = [
+            { name: "Al Hithaya M.V", moh: "Mutur", families: 97, people: 411, male: 204, female: 207, infants: 0, under5: 47, pregnant: 2, deaths: 0, missing: 0 },
+            { name: "Asraf Vidiyalayam", moh: "Mutur", families: 7, people: 33, male: 13, female: 20, infants: 0, under5: 4, pregnant: 0, deaths: 0, missing: 0 },
+            { name: "Al Hilal C.C", moh: "Mutur", families: 46, people: 142, male: 64, female: 78, infants: 0, under5: 0, pregnant: 0, deaths: 0, missing: 0 },
+            { name: "Vipulanantha Vidiyalayam", moh: "Mutur", families: 43, people: 112, male: 49, female: 63, infants: 0, under5: 46, pregnant: 2, deaths: 0, missing: 0 },
+            { name: "Amman Nagar Ambal Vid", moh: "Mutur", families: 35, people: 85, male: 40, female: 45, infants: 0, under5: 12, pregnant: 1, deaths: 0, missing: 0 },
+            { name: "Aysha Vidiyalayam", moh: "Mutur", families: 9, people: 28, male: 12, female: 16, infants: 0, under5: 7, pregnant: 0, deaths: 0, missing: 0 },
+            { name: "Muthur Muslim Ladies College", moh: "Mutur", families: 245, people: 909, male: 444, female: 465, infants: 0, under5: 55, pregnant: 3, deaths: 0, missing: 0 }
         ];
-        const GENDER_COLORS = {
-            male: '#3b82f6', // Blue for Male
-            female: '#ec4899' // Pink for Female
-        };
-        const TOP_N_SLICES = 5;
 
-        // 1. Calculate Totals
-        const totals = disasterData.reduce((acc, curr) => {
-            acc.families += curr.families;
-            acc.people += curr.people;
-            acc.male += curr.male;
-            acc.female += curr.female;
-            acc.infants += curr.infants;
-            acc.under5 += curr.under5;
-            acc.pregnant += curr.pregnant;
-            acc.deaths += curr.deaths;
-            acc.missing += curr.missing;
-            return acc;
-        }, { families: 0, people: 0, male: 0, female: 0, infants: 0, under5: 0, pregnant: 0, deaths: 0, missing: 0 });
-
-
-        // === VISUALIZATION FUNCTIONS ===
-
-        // Helper function for rendering a Pie Chart using SVG (Used for MOH Distribution for People, Gender, and now Vulnerable groups)
-        const renderPieChart = (containerId, dataKey, chartTitle) => {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
-            
-            // 1. Prepare and Aggregate Data
-            const data = disasterData.map(d => ({
-                moh: d.moh,
-                value: d[dataKey]
-            })).filter(d => d.value > 0)
-              .sort((a, b) => b.value - a.value); // Sort descending
-
-            if (data.length === 0) {
-                container.innerHTML = `<p class="text-center w-full text-gray-500">No data available for ${chartTitle}.</p>`;
-                return;
-            }
-
-            const totalValue = data.reduce((sum, d) => sum + d.value, 0);
-            
-            // Grouping: Take top N and combine the rest into 'Other'
-            let slices = data.slice(0, TOP_N_SLICES);
-            const otherSlices = data.slice(TOP_N_SLICES);
-
-            if (otherSlices.length > 0) {
-                const otherValue = otherSlices.reduce((sum, d) => sum + d.value, 0);
-                slices.push({ moh: "Other MOH Areas", value: otherValue });
-            }
-            
-            // 2. Generate Pie Slices (SVG)
-            const svgSize = 300;
-            const radius = svgSize / 2 - 10; // Minus 10 for padding
-            const center = svgSize / 2;
-            let startAngle = 0;
-            
-            // SVG and Labels Container Setup
-            const chartArea = document.createElement('div');
-            // Use flex-col on mobile and flex-row on desktop for responsive layout
-            chartArea.className = "flex flex-col lg:flex-row items-center justify-center p-2 space-y-4 lg:space-y-0 lg:space-x-12";
-            
-            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-            svg.setAttribute("width", svgSize);
-            svg.setAttribute("height", svgSize);
-            svg.setAttribute("viewBox", `0 0 ${svgSize} ${svgSize}`);
-            svg.className = "flex-shrink-0 shadow-xl rounded-full border border-gray-200";
-
-            const labelContainer = document.createElement('div');
-            // Adjusted container for better display in the 3-column grid
-            labelContainer.className = "flex flex-col space-y-2 text-sm max-w-full w-full lg:w-auto mt-4 lg:mt-0"; 
-            
-            slices.forEach((slice, index) => {
-                const percentage = (slice.value / totalValue);
-                const angle = percentage * 360;
-                const endAngle = startAngle + angle;
-                
-                // Skip if slice is too small to draw (less than 0.5 degree)
-                if (angle < 0.5) {
-                    startAngle = endAngle;
-                    return;
-                }
-
-                // Function to convert polar to cartesian coordinates
-                const getCoords = (angle) => {
-                    const radians = (angle - 90) * (Math.PI / 180);
-                    return [
-                        center + (radius * Math.cos(radians)),
-                        center + (radius * Math.sin(radians))
-                    ];
-                };
-                
-                const [x1, y1] = getCoords(startAngle);
-                const [x2, y2] = getCoords(endAngle);
-
-                const largeArcFlag = angle > 180 ? 1 : 0;
-                const color = PIE_COLORS[index % PIE_COLORS.length];
-                
-                // Define the SVG path (slice)
-                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                path.setAttribute("d", `M ${center},${center} L ${x1},${y1} A ${radius},${radius} 0 ${largeArcFlag},1 ${x2},${y2} Z`);
-                path.setAttribute("fill", color);
-                path.setAttribute("stroke", "white");
-                path.setAttribute("stroke-width", "1");
-                path.setAttribute("title", `${slice.moh}: ${slice.value.toLocaleString()} (${(percentage * 100).toFixed(1)}%)`);
-                path.style.transition = 'transform 0.3s';
-                
-                // Add hover effect to slightly pull the slice out
-                path.addEventListener('mouseenter', () => path.style.transform = 'scale(1.03)');
-                path.addEventListener('mouseleave', () => path.style.transform = 'scale(1)');
-                
-                svg.appendChild(path);
-                
-                // 3. Generate Labels
-                const percentageText = `${(percentage * 100).toFixed(1)}%`;
-                const labelText = `${slice.moh}: **${slice.value.toLocaleString()}** (${percentageText})`;
-                const labelHtml = `
-                    <div class="flex items-center p-2 rounded-lg transition duration-150 hover:bg-gray-100/50" title="${slice.moh}">
-                        <span class="w-4 h-4 rounded-full mr-3 flex-shrink-0 shadow-sm" style="background-color: ${color};"></span>
-                        <span class="text-gray-800 font-medium">${labelText}</span>
-                    </div>
-                `;
-                labelContainer.innerHTML += labelHtml;
-
-                startAngle = endAngle;
-            });
-
-            chartArea.appendChild(svg);
-            chartArea.appendChild(labelContainer);
-            container.appendChild(chartArea);
-
-            // Add a note about the grouping
-            if (otherSlices.length > 0) {
-                const note = document.createElement('p');
-                note.className = "text-center text-xs text-gray-500 mt-4 px-4 w-full";
-                note.innerHTML = `Note: Smaller areas (constituting ${otherSlices.length} MOHs) are combined into 'Other MOH Areas' for a clearer visual distribution.`;
-                container.appendChild(note);
-            }
-        };
-
-        // Function for a simple Male vs. Female Pie Chart (from the total population)
-        const renderGenderPieChart = (containerId) => {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
-            
-            // Prepare data (simplified to just two slices)
-            const data = [
-                { label: "Male Affected", key: 'male', value: totals.male, color: GENDER_COLORS.male, icon: '♂️' },
-                { label: "Female Affected", key: 'female', value: totals.female, color: GENDER_COLORS.female, icon: '♀️' }
-            ].filter(d => d.value > 0);
-
-            if (data.length === 0) {
-                container.innerHTML = `<p class="text-center w-full text-gray-500">No gender data reported.</p>`;
-                return;
-            }
-
-            const totalValue = data.reduce((sum, d) => sum + d.value, 0);
-
-            // SVG and Labels Container Setup
-            const chartArea = document.createElement('div');
-            chartArea.className = "flex flex-col md:flex-row items-center justify-center p-2 space-y-4 md:space-y-0 md:space-x-12";
-            
-            const svgSize = 300;
-            const radius = svgSize / 2 - 10;
-            const center = svgSize / 2;
-            let startAngle = 0;
-
-            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-            svg.setAttribute("width", svgSize);
-            svg.setAttribute("height", svgSize);
-            svg.setAttribute("viewBox", `0 0 ${svgSize} ${svgSize}`);
-            svg.className = "flex-shrink-0 shadow-xl rounded-full border border-gray-200";
-
-            const labelContainer = document.createElement('div');
-            labelContainer.className = "flex flex-col space-y-2 text-base max-w-full md:max-w-sm w-full md:w-auto";
-            
-            data.forEach((slice, index) => {
-                const percentage = (slice.value / totalValue);
-                const angle = percentage * 360;
-                const endAngle = startAngle + angle;
-                
-                // Skip if slice is too small
-                if (angle < 0.5) {
-                    startAngle = endAngle;
-                    return;
-                }
-
-                const getCoords = (angle) => {
-                    const radians = (angle - 90) * (Math.PI / 180);
-                    return [
-                        center + (radius * Math.cos(radians)),
-                        center + (radius * Math.sin(radians))
-                    ];
-                };
-                
-                const [x1, y1] = getCoords(startAngle);
-                const [x2, y2] = getCoords(endAngle);
-
-                const largeArcFlag = angle > 180 ? 1 : 0;
-                
-                // Define the SVG path (slice)
-                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                path.setAttribute("d", `M ${center},${center} L ${x1},${y1} A ${radius},${radius} 0 ${largeArcFlag},1 ${x2},${y2} Z`);
-                path.setAttribute("fill", slice.color);
-                path.setAttribute("stroke", "white");
-                path.setAttribute("stroke-width", "1");
-                path.setAttribute("title", `${slice.label}: ${slice.value.toLocaleString()} (${(percentage * 100).toFixed(1)}%)`);
-                path.style.transition = 'transform 0.3s';
-                
-                path.addEventListener('mouseenter', () => path.style.transform = 'scale(1.03)');
-                path.addEventListener('mouseleave', () => path.style.transform = 'scale(1)');
-                
-                svg.appendChild(path);
-                
-                // Generate Labels
-                const percentageText = `${(percentage * 100).toFixed(1)}%`;
-                const labelText = `${slice.icon} **${slice.label.replace(' Affected', '')}:** ${slice.value.toLocaleString()} (${percentageText})`;
-                const labelHtml = `
-                    <div class="flex items-center p-2 rounded-lg transition duration-150 hover:bg-gray-100/50" title="${slice.label}">
-                        <span class="w-4 h-4 rounded-full mr-3 flex-shrink-0 shadow-sm" style="background-color: ${slice.color};"></span>
-                        <span class="text-gray-800 font-medium">${labelText}</span>
-                    </div>
-                `;
-                labelContainer.innerHTML += labelHtml;
-
-                startAngle = endAngle;
-            });
-
-            chartArea.appendChild(svg);
-            chartArea.appendChild(labelContainer);
-            container.appendChild(chartArea);
-        };
-        
-        // Removed: renderVulnerableGroupsVisualization function (stacked bar chart is obsolete)
-
-
-        // === RENDER ALL ELEMENTS ON LOAD ===
-        
-        // 2. Render KPI Cards
-        const kpiMetrics = [
-            { label: "Total Affected People", value: totals.people, icon: "👤", color: "bg-secondary", text: "text-white" },
-            { label: "Total Families", value: totals.families, icon: "🏠", color: "bg-accent", text: "text-gray-800" },
-            { label: "Vulnerable: Infants", value: totals.infants, icon: "👶", color: "bg-vulnerable-infants", text: "text-white" },
-            { label: "Vulnerable: Under 5", value: totals.under5, icon: "🧒", color: "bg-vulnerable-under5", text: "text-white" },
-            { label: "Vulnerable: Pregnant Mothers", value: totals.pregnant, icon: "🤰", color: "bg-vulnerable-pregnant", text: "text-white" },
+        // All potential MOH areas in the district
+        const ALL_MOH_AREAS = [
+            "Padavisripura", "Gomarankadawala", "Kuchchaveli", "Trincomalee",
+            "Thampalagamam", "Kinniya", "Eachchalampathu", "Seruwila",
+            "Kanthale", "Uppuveli", "Kurinchakerny", "Mutur"
         ];
         
-        const kpiContainer = document.getElementById('kpi-cards');
-        kpiMetrics.forEach(metric => {
-            const card = `
-                <div class="${metric.color} ${metric.text} p-4 rounded-xl shadow-lg border border-gray-100 transform hover:shadow-xl transition duration-200">
-                    <div class="text-4xl mb-2">${metric.icon}</div>
-                    <p class="text-xs font-semibold uppercase opacity-80">${metric.label}</p>
-                    <p class="text-3xl font-extrabold mt-1">${metric.value.toLocaleString()}</p>
+        let currentMOHFilter = null; // State to track the active filter
+
+        // --- Helper Functions ---
+
+        /**
+         * Calculates the total statistics from the raw data.
+         * @param {Array} data - The dataset to calculate totals from.
+         * @returns {object} Total statistics.
+         */
+        function calculateTotals(data) {
+            const totals = {
+                totalCamps: data.length,
+                totalPeople: 0,
+                totalFamilies: 0,
+                totalInfants: 0,
+                totalUnder5: 0,
+                totalPregnant: 0,
+                totalDeaths: 0,
+                totalMissing: 0,
+            };
+
+            data.forEach(camp => {
+                totals.totalPeople += camp.people;
+                totals.totalFamilies += camp.families;
+                totals.totalInfants += camp.infants;
+                totals.totalUnder5 += camp.under5;
+                totals.totalPregnant += camp.pregnant;
+                totals.totalDeaths += camp.deaths;
+                totals.totalMissing += camp.missing;
+            });
+
+            return totals;
+        }
+
+        /**
+         * Creates an HTML string for a single summary card.
+         */
+        function createSummaryCard(title, value, iconName, colorClass) {
+            return `
+                <div class="bg-card-bg p-5 rounded-xl shadow-custom border-b-4 ${colorClass} hover:shadow-2xl transition duration-300 transform hover:scale-[1.02] cursor-default">
+                    <div class="flex items-center justify-between">
+                        <div class="p-3 ${colorClass}/20 rounded-full">
+                            <i lucide="${iconName}" class="w-6 h-6 ${colorClass}"></i>
+                        </div>
+                        <span class="text-3xl sm:text-4xl font-extrabold text-gray-900">${value.toLocaleString()}</span>
+                    </div>
+                    <p class="mt-4 text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wider">${title}</p>
                 </div>
             `;
-            kpiContainer.innerHTML += card;
-        });
+        }
 
-        // 3. Render all MOH Visualizations
-        renderPieChart('moh-people-visualization', 'people', 'Affected Population (People)');
-        renderGenderPieChart('gender-distribution'); 
-        
-        // NEW: Render three separate vulnerable group pie charts
-        renderPieChart('vulnerable-infants-chart', 'infants', 'Infants');
-        renderPieChart('vulnerable-under5-chart', 'under5', 'Children Under 5');
-        renderPieChart('vulnerable-pregnant-chart', 'pregnant', 'Pregnant Mothers');
+        /**
+         * Renders the summary cards and updates the DOM based on the filtered data.
+         * If currentMOHFilter is set, it shows totals for that area. Otherwise, it shows global totals.
+         */
+        function renderSummaryCards() {
+            const dataToDisplay = currentMOHFilter 
+                ? RAW_CAMP_DATA.filter(c => c.moh === currentMOHFilter)
+                : RAW_CAMP_DATA;
 
+            const totals = calculateTotals(dataToDisplay);
+            const cardsContainer = document.getElementById('summary-cards');
+            
+            const cardData = [
+                { title: "Total People Displaced", value: totals.totalPeople, icon: "users", color: "border-rdhs-blue text-rdhs-blue" },
+                { title: "Total Active Camps", value: totals.totalCamps, icon: "tent", color: "border-accent-secondary text-accent-secondary" },
+                { title: "Families Sheltered", value: totals.totalFamilies, icon: "home", color: "border-accent-primary text-accent-primary" },
+                { title: "Vulnerable Individuals", value: totals.totalInfants + totals.totalUnder5 + totals.totalPregnant, icon: "shield-alert", color: "border-red-600 text-red-600" },
+            ];
 
-        // 4. Render Detailed Data Table
-        const tableBody = document.getElementById('data-table-body');
-        tableBody.innerHTML = ''; // Clear existing content
-        disasterData.forEach((item, index) => {
-            const rowClass = item.people > 0 ? (index % 2 === 0 ? 'bg-white hover:bg-gray-50' : 'bg-gray-50 hover:bg-gray-100') : 'bg-red-50/50 hover:bg-red-100'; // Highlight zero-population areas slightly
-            const rowHtml = `
-                <tr class="${rowClass} transition duration-150 ease-in-out">
-                    <td class="px-3 py-3 whitespace-nowrap text-sm font-medium text-gray-900">${item.moh}</td>
-                    <td class="px-3 py-3 whitespace-nowrap text-sm text-right font-semibold text-accent">${item.families.toLocaleString()}</td>
-                    <td class="px-3 py-3 whitespace-nowrap text-sm text-right font-extrabold text-secondary">${item.people.toLocaleString()}</td>
-                    <td class="px-3 py-3 whitespace-nowrap text-sm text-right hidden sm:table-cell">${item.male.toLocaleString()}</td>
-                    <td class="px-3 py-3 whitespace-nowrap text-sm text-right hidden sm:table-cell">${item.female.toLocaleString()}</td>
-                    <td class="px-3 py-3 whitespace-nowrap text-sm text-right font-medium bg-vulnerable-infants/10 text-vulnerable-infants">${item.infants.toLocaleString()}</td>
-                    <td class="px-3 py-3 whitespace-nowrap text-sm text-right font-medium bg-vulnerable-under5/10 text-vulnerable-under5">${item.under5.toLocaleString()}</td>
-                    <td class="px-3 py-3 whitespace-nowrap text-sm text-right font-medium bg-vulnerable-pregnant/10 text-vulnerable-pregnant">${item.pregnant.toLocaleString()}</td>
+            cardsContainer.innerHTML = cardData.map(d => createSummaryCard(d.title, d.value, d.icon, d.color)).join('');
+            
+            lucide.createIcons();
+        }
+
+        /**
+         * Renders the detailed camp data table based on the active filter.
+         */
+        function renderCampTable() {
+            const tableBody = document.getElementById('camp-data-body');
+            const filterText = document.getElementById('current-moh-filter');
+            
+            const filteredData = currentMOHFilter
+                ? RAW_CAMP_DATA.filter(c => c.moh === currentMOHFilter)
+                : RAW_CAMP_DATA;
+
+            // Update the filter status text
+            filterText.textContent = currentMOHFilter 
+                ? `(Showing Camps in ${currentMOHFilter})` 
+                : `(Showing All ${RAW_CAMP_DATA.length} Camps)`;
+
+            if (filteredData.length === 0 && currentMOHFilter) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center p-6 text-lg text-gray-500 bg-gray-50">
+                            No active camps reported in the ${currentMOHFilter} MOH Area at this time.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            const rows = filteredData.map(camp => `
+                <tr class="border-b last:border-b-0 hover:bg-rdhs-blue/5 transition duration-150">
+                    <td class="whitespace-nowrap font-medium text-gray-900">${camp.name}</td>
+                    <td class="text-gray-600 font-semibold">${camp.moh}</td>
+                    <td class="text-gray-800">${camp.families}</td>
+                    <td class="text-gray-800 font-bold">${camp.people}</td>
+                    <td class="text-accent-primary font-bold text-center">${camp.infants}</td>
+                    <td class="text-accent-primary font-bold text-center">${camp.under5}</td>
+                    <td class="text-accent-primary font-bold text-center">${camp.pregnant}</td>
                 </tr>
-            `;
-            tableBody.innerHTML += rowHtml;
-        });
+            `).join('');
 
-        // Render Table Footer (Totals)
-        const tableFooter = document.getElementById('data-table-footer');
-        tableFooter.innerHTML = ''; // Clear existing content
-        const footerHtml = `
-            <tr class="bg-gray-800 text-white font-bold text-base sticky bottom-0">
-                <td class="px-3 py-3 whitespace-nowrap rounded-bl-xl">TOTALS</td>
-                <td class="px-3 py-3 text-right">${totals.families.toLocaleString()}</td>
-                <td class="px-3 py-3 text-right">${totals.people.toLocaleString()}</td>
-                <td class="px-3 py-3 text-right hidden sm:table-cell">${totals.male.toLocaleString()}</td>
-                <td class="px-3 py-3 text-right hidden sm:table-cell">${totals.female.toLocaleString()}</td>
-                <td class="px-3 py-3 text-right bg-vulnerable-infants/90">${totals.infants.toLocaleString()}</td>
-                <td class="px-3 py-3 text-right bg-vulnerable-under5/90">${totals.under5.toLocaleString()}</td>
-                <td class="px-3 py-3 text-right bg-vulnerable-pregnant/90 rounded-br-xl">${totals.pregnant.toLocaleString()}</td>
-            </tr>
-        `;
-        tableFooter.innerHTML += footerHtml;
+            tableBody.innerHTML = rows;
+        }
+        
+        /**
+         * Renders the interactive MOH filter buttons.
+         */
+        function renderMOHFilters() {
+            const container = document.getElementById('moh-filter-container');
+            container.innerHTML = ''; // Clear existing buttons
+            const uniqueMohs = [...new Set(RAW_CAMP_DATA.map(c => c.moh))];
+            
+            // MOH areas with active camps
+            const activeMohs = uniqueMohs.filter(moh => RAW_CAMP_DATA.some(c => c.moh === moh));
 
+            // Create 'Show All' button
+            const allButton = document.createElement('button');
+            allButton.textContent = 'Show All Camps';
+            allButton.className = `px-5 py-2.5 rounded-xl font-bold transition duration-150 shadow-lg hover:shadow-xl ${currentMOHFilter === null ? 'selected' : 'bg-rdhs-blue/10 text-rdhs-blue hover:bg-rdhs-blue/20'}`;
+            allButton.onclick = () => filterData(null, allButton);
+            container.appendChild(allButton);
+            
+            // Create buttons for active MOH areas
+            activeMohs.forEach(moh => {
+                const button = document.createElement('button');
+                button.textContent = moh;
+                button.className = `px-5 py-2.5 rounded-xl font-bold transition duration-150 shadow-lg hover:shadow-xl ${currentMOHFilter === moh ? 'selected' : 'bg-rdhs-blue/10 text-rdhs-blue hover:bg-rdhs-blue/20'}`;
+                button.onclick = () => filterData(moh, button);
+                container.appendChild(button);
+            });
+            
+            // Add inactive MOH areas for completeness (can be helpful if a new camp opens)
+            const inactiveMohs = ALL_MOH_AREAS.filter(moh => !activeMohs.includes(moh));
+            inactiveMohs.forEach(moh => {
+                const button = document.createElement('button');
+                button.textContent = `${moh} (No Camps)`;
+                button.className = 'px-5 py-2.5 rounded-xl font-medium transition duration-150 bg-gray-100 text-gray-400 cursor-not-allowed shadow-md';
+                button.disabled = true;
+                container.appendChild(button);
+            });
+        }
+        
+        /**
+         * Filters the dashboard data based on the selected MOH area.
+         */
+        function filterData(mohArea, clickedButton) {
+            currentMOHFilter = mohArea;
+            
+            // Update button styles and re-render the filter container
+            document.querySelectorAll('#moh-filter-container button').forEach(btn => {
+                // Determine if this button represents the currently active filter
+                const isSelected = (mohArea === null && btn.textContent === 'Show All Camps') || (mohArea !== null && btn.textContent === mohArea);
+
+                // Reset classes
+                btn.classList.remove('selected', 'bg-rdhs-blue', 'text-white', 'bg-rdhs-blue/10', 'hover:bg-rdhs-blue/20');
+                
+                if (btn.disabled) {
+                    btn.classList.add('bg-gray-100', 'text-gray-400', 'cursor-not-allowed', 'shadow-md');
+                    return;
+                }
+
+                if (isSelected) {
+                    // Apply selected style
+                    btn.classList.add('selected');
+                } else {
+                    // Apply unselected style (Show All gets a neutral background, MOHs get the accent color)
+                    if (btn.textContent === 'Show All Camps') {
+                        btn.classList.add('bg-rdhs-blue/10', 'text-rdhs-blue', 'hover:bg-rdhs-blue/20');
+                    } else {
+                        btn.classList.add('bg-rdhs-blue/10', 'text-rdhs-blue', 'hover:bg-rdhs-blue/20');
+                    }
+                }
+            });
+
+            // Re-render dashboard sections with filtered data
+            renderSummaryCards();
+            renderCampTable();
+        }
+
+
+        // --- Initialization ---
+
+        function initDashboard() {
+            // 1. Update the last updated time
+            document.getElementById('data-update-time').innerHTML = '<i lucide="clock" class="w-4 h-4 inline mr-1"></i> Data Last Updated: <strong>December 5th, 2025, 1:00 PM</strong>';
+            
+            // 2. Render all components
+            renderMOHFilters(); // Renders interactive filter buttons
+            renderSummaryCards(); // Renders totals (initially for all)
+            renderCampTable(); // Renders the table (initially for all)
+            
+            // Re-render Lucide icons
+            lucide.createIcons(); 
+        }
+
+        // Run the initialization function when the window loads
+        window.onload = initDashboard;
     </script>
-
-    <style>
-    /* Define the keyframe animation */
-    @keyframes pulse-glow {
-        0% {
-            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); /* Red-500 equivalent */
-            transform: scale(1);
-        }
-        70% {
-            box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
-            transform: scale(1.02);
-        }
-        100% {
-            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
-            transform: scale(1);
-        }
-    }
-    
-    /* Apply the animation class */
-    .hero-pulse-button {
-        animation: pulse-glow 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
-    }
-</style>
-
-
 </body>
 </html>
