@@ -32,23 +32,23 @@
 
     <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 p-8 md:p-12">
 
-        <button onclick="authenticate('Kurincherkeni.html')" class="active-card text-white p-8 rounded-xl shadow-xl flex flex-col items-center justify-center transition duration-300 transform hover:scale-[1.02]">
+        <div class="bg-white text-gray-400 p-8 rounded-xl shadow-lg flex flex-col items-center justify-center cursor-not-allowed border-2 border-dashed border-gray-300">
             <svg class="h-10 w-10 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.305 3.25 1.953 3.25h14.706c1.648 0 2.813-1.75 1.948-3.25L12 2.25 2.997 16.126zM12 15.75h.007v.008H12v-.008z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 9v.75m-4.5-9V.75M4.5 9H3.75m17.25 0h-.75M3 13.5l2.25 1.5m1.5 2.25l-1.5 1.5m10.5-2.25l-2.25-1.5m-1.5-2.25l1.5-1.5M12 18a6 6 0 100-12 6 6 0 000 12z" />
             </svg>
             <span class="text-3xl font-bold mb-1">Kurincherkeni</span>
-            <span class="text-lg opacity-90">View Critical Report</span>
-        </button>
+            <span class="text-lg">Data Pending</span>
+        </div>
 
-        
+        <div class="bg-white text-gray-400 p-8 rounded-xl shadow-lg flex flex-col items-center justify-center cursor-not-allowed border-2 border-dashed border-gray-300">
             <svg class="h-10 w-10 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.305 3.25 1.953 3.25h14.706c1.648 0 2.813-1.75 1.948-3.25L12 2.25 2.997 16.126zM12 15.75h.007v.008H12v-.008z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 9v.75m-4.5-9V.75M4.5 9H3.75m17.25 0h-.75M3 13.5l2.25 1.5m1.5 2.25l-1.5 1.5m10.5-2.25l-2.25-1.5m-1.5-2.25l1.5-1.5M12 18a6 6 0 100-12 6 6 0 000 12z" />
             </svg>
             <span class="text-3xl font-bold mb-1">Seruwila</span>
-            <span class="text-lg opacity-90">View Critical Report</span>
-        </button>
+            <span class="text-lg">Data Pending</span>
+        </div>
 
-        
+        <button onclick="authenticate('Muttur.html')" class="active-card text-white p-8 rounded-xl shadow-xl flex flex-col items-center justify-center transition duration-300 transform hover:scale-[1.02]">
             <svg class="h-10 w-10 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.305 3.25 1.953 3.25h14.706c1.648 0 2.813-1.75 1.948-3.25L12 2.25 2.997 16.126zM12 15.75h.007v.008H12v-.008z" />
             </svg>
@@ -73,10 +73,7 @@
         </div>
 
     </div>
-</div>
-</div>
 
-<!-- HOME BUTTON -->
 <div class="text-center mt-6">
     <a 
         href="https://jeevantjr.github.io/TrincoDisaster2025/" 
@@ -95,7 +92,6 @@
         <p class="text-xs">&copy; 2025 High-Risk Area Dashboard. All Rights Reserved.</p>
     </div>
 
-<!-- LOGIN MODAL -->
 <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
     <div class="bg-white rounded-2xl shadow-2xl w-80 p-6 relative">
         <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Secure Access</h2>
@@ -130,6 +126,7 @@ function authenticate(reportFile) {
         const password = document.getElementById("modalPassword").value.trim();
         const errorMsg = document.getElementById("modalError");
 
+        // Use 'rdhs' and 'trinco' as the hardcoded credentials
         if(username === "rdhs" && password === "trinco") {
             sessionStorage.setItem("authenticated", "true");
             modal.classList.add("hidden");
@@ -140,7 +137,6 @@ function authenticate(reportFile) {
     };
 }
 </script>
-
 
 </body>
 </html>
