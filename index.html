@@ -3,497 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trincomalee District Disaster Response Dashboard</title>
-    <!-- Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Load Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Load Poppins Font for a professional look -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Custom Tailwind Configuration -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'rdhs-blue': '#1a56db', // Stronger Blue
-                        'accent-primary': '#10b981', // Green for main accent/data success
-                        'accent-secondary': '#f97316', // Orange for urgency
-                        'bg-light': '#f3f4f6', // Lighter background
-                        'card-bg': '#ffffff',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        heading: ['Poppins', 'sans-serif'], // Poppins for main title
-                    },
-                    boxShadow: {
-                        'custom': '0 10px 30px -5px rgba(26, 86, 219, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-                    }
-                }
-            }
-        }
-    </script>
+    <title>Trincomalee Disaster Response - Welfare Camp Status</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* Custom styles for the table for better mobile UX */
-        .responsive-table th, .responsive-table td {
-            padding: 14px 20px;
-            text-align: left;
+        /* Custom styles for a professional and attractive look */
+        body {
+            background-color: #f4f7f6; /* Light gray background for contrast */
+            padding-top: 30px;
+            padding-bottom: 30px;
         }
-        .responsive-table th {
-            letter-spacing: 0.05em;
-        }
-
-        /* Ensure icon rendering */
-        [lucide] {
-            stroke-width: 2.5;
-        }
-        
-        /* Highlighting for selected MOH filter */
-        #moh-filter-container button {
-            transition: all 0.2s ease-in-out;
-            border: 2px solid transparent;
-            /* Professional shadow effect for all buttons */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        #moh-filter-container button.selected {
-            background-color: var(--tw-colors-rdhs-blue);
+        .header-card {
+            background-color: #007bff; /* Primary blue color for the main header */
             color: white;
-            box-shadow: 0 4px 10px rgba(26, 86, 219, 0.4);
-            transform: translateY(-2px) scale(1.02);
-            border-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
         }
-
+        .data-card {
+            background-color: #ffffff; /* White background for data cards */
+            border-left: 5px solid #007bff; /* Accent color on the side */
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+        .data-card h5 {
+            color: #007bff;
+            font-weight: bold;
+        }
+        .data-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #343a40; /* Dark gray for prominence */
+        }
+        .status-alert {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .disclaimer-box {
+            background-color: #fff3cd;
+            color: #856404;
+            border-color: #ffeeba;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .contact-card {
+            background-color: #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
     </style>
 </head>
-<body class="bg-bg-light font-sans min-h-screen">
+<body>
 
-    <div id="dashboard-app" class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+<div class="container">
 
-        <!-- Header and Banner - Centered, Larger Font -->
-        <header class="mb-10 p-6 bg-rdhs-blue text-white rounded-xl shadow-custom shadow-rdhs-blue/40 text-center">
-            <div class="space-y-2">
-                <h1 class="text-5xl md:text-6xl font-heading font-extrabold tracking-tighter">
-                    Trincomalee Disaster Response
-                </h1>
-                <p class="text-xl font-light opacity-90">
-                    Real-time Welfare Camp Status for RDHS
-                </p>
-                <!-- INCREASED SIZE AND FONT FOR RDHS SUBHEADING -->
-                <div class="pt-4">
-                    <p class="text-xl md:text-2xl font-heading font-semibold text-yellow-300">Office of Regional Director of Health Services (RDHS)</p>
-                    <p class="text-sm">Health Information Management Unit</p>
+    <div class="header-card text-center">
+        <h1 class="display-5">
+            <i class="fas fa-hand-holding-heart me-2"></i>
+            Trincomalee Disaster Response
+        </h1>
+        <p class="lead mb-0">Real-time Welfare Camp Status for RDHS Office</p>
+    </div>
+
+    <div class="alert alert-danger text-center status-alert" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        URGENT: OFFICIAL DATA CONFIRMATION REQUIRED
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="data-card border-left-danger">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h2 class="mb-3 text-success"><i class="fas fa-check-circle me-2"></i>Current Situation Overview</h2>
+                        <div class="status-alert alert alert-success text-center">
+                            **All the welfare camps are closed in our regional area**
+                        </div>
+                        <p class="text-muted mb-0">Data Last Updated: **December 6th, 2025, 21 PM**</p>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <div class="p-3 bg-light rounded">
+                            <h4 class="text-secondary">Affected Areas Status</h4>
+                            <p class="mb-1">All **13 MOH Areas** Reporting:</p>
+                            <span class="badge bg-primary me-2">Padavisripura</span>
+                            <span class="badge bg-primary me-2">Gomarankadawala</span>
+                            <span class="badge bg-primary me-2">Kuchchaveli</span>
+                            <span class="badge bg-primary me-2">Trincomalee</span>
+                            <span class="badge bg-primary me-2">Thampalagamam</span>
+                            <span class="badge bg-primary me-2">Kinniya</span>
+                            <span class="badge bg-primary me-2">Eachchalampathu</span>
+                            <span class="badge bg-primary me-2">Seruwila</span>
+                            <span class="badge bg-primary me-2">Kanthale</span>
+                            <span class="badge bg-primary me-2">Uppuveli</span>
+                            <span class="badge bg-primary me-2">Kurinchakerny</span>
+                            <span class="badge bg-primary me-2">Mutur</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </header>
-
-        <!-- Status Bar -->
-        <div id="status-bar" class="mb-8 p-4 bg-red-50 text-red-800 border-l-4 border-red-500 rounded-lg shadow-md flex items-center justify-between">
-            <div class="flex items-center">
-                <i lucide="alert-triangle" class="w-6 h-6 mr-3 flex-shrink-0 text-red-600"></i>
-                <span class="text-sm md:text-base font-bold uppercase tracking-wide">
-                    URGENT: OFFICIAL DATA CONFIRMATION REQUIRED
-                </span>
-            </div>
-            <p id="data-update-time" class="text-sm font-medium text-red-600 flex items-center">
-                <i lucide="clock" class="w-4 h-4 inline mr-1"></i>
-                Data Last Updated: <strong>Loading...</strong>
-            </p>
         </div>
+    </div>
 
-        <!-- Summary Cards Section -->
-        <h2 class="text-3xl font-bold mb-6 text-accent-primary border-b-2 border-accent-primary/50 pb-2 flex items-center">
-            <i lucide="layout-dashboard" class="w-6 h-6 mr-3 text-accent-primary"></i>
-            Current Situation Overview
-        </h2>
-        <div id="summary-cards" class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-            <!-- Cards will be populated here by JavaScript -->
-        </div>
+    <div class="row">
         
-        <!-- Interactive Visualization (MOH Filter) Section -->
-        <h2 class="text-3xl font-bold mb-6 mt-8 text-accent-secondary border-b-2 border-accent-secondary/50 pb-2 flex items-center">
-            <i lucide="filter" class="w-6 h-6 mr-3 text-accent-secondary"></i>
-            Filter Camp Data by MOH Area
-        </h2>
-        <div class="bg-card-bg p-6 rounded-xl shadow-custom border border-gray-100 mb-8">
-            <p class="text-lg font-medium mb-4 text-gray-700">Select an MOH Area to view camp details:</p>
-            <div id="moh-filter-container" class="flex flex-wrap gap-3">
-                <!-- MOH Filter Buttons will be populated here -->
+        <div class="col-lg-3 col-md-6">
+            <div class="data-card">
+                <h5 class="text-danger"><i class="fas fa-home me-2"></i>No. of Families</h5>
+                <div class="data-value">0</div>
             </div>
         </div>
 
-        <!-- Camp Data Table Section - Enhanced Styling -->
-        <div class="bg-card-bg p-6 rounded-xl shadow-custom border border-gray-100">
-            <h2 class="text-xl font-bold mb-4 text-gray-800 flex items-center">
-                <i lucide="list-checks" class="w-6 h-6 mr-2 text-rdhs-blue"></i>
-                Detailed Welfare Camp Data <span id="current-moh-filter" class="ml-3 text-sm font-medium text-gray-500">(Showing All Camps)</span>
-            </h2>
-            <div class="overflow-x-auto">
-                <table id="camp-data-table" class="min-w-full responsive-table bg-white rounded-lg">
-                    <thead class="bg-rdhs-blue/10 border-b-2 border-rdhs-blue/20">
+        <div class="col-lg-3 col-md-6">
+            <div class="data-card">
+                <h5 class="text-info"><i class="fas fa-users me-2"></i>Total No. of People</h5>
+                <div class="data-value">0</div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="data-card">
+                <h5 class="text-dark"><i class="fas fa-cross me-2"></i>No. of Deaths</h5>
+                <div class="data-value">0</div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="data-card">
+                <h5 class="text-warning"><i class="fas fa-user-secret me-2"></i>No. of Missing</h5>
+                <div class="data-value">0</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-4 mb-4">
+        <div class="card-header bg-secondary text-white">
+            <h4 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Demographic Breakdown (In Camps)</h4>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover mb-0">
+                    <thead class="table-light">
                         <tr>
-                            <th class="text-sm font-bold tracking-wider text-rdhs-blue uppercase">Center Name</th>
-                            <th class="text-sm font-bold tracking-wider text-rdhs-blue uppercase">MOH Area</th>
-                            <th class="text-sm font-bold tracking-wider text-gray-700 uppercase">Families</th>
-                            <th class="text-sm font-bold tracking-wider text-gray-700 uppercase">People</th>
-                            <th class="text-sm font-bold tracking-wider text-accent-primary uppercase">Infants</th>
-                            <th class="text-sm font-bold tracking-wider text-accent-primary uppercase">Under 5Y</th>
-                            <th class="text-sm font-bold tracking-wider text-accent-primary uppercase">Pregnant</th>
+                            <th><i class="fas fa-male"></i> Male</th>
+                            <th><i class="fas fa-female"></i> Female</th>
+                            <th><i class="fas fa-baby"></i> Infants (&lt;1y)</th>
+                            <th><i class="fas fa-child"></i> Under 5y Children</th>
+                            <th><i class="fas fa-child-reaching"></i> &gt;5 yr Children</th>
+                            <th><i class="fas fa-pregnant"></i> Pregnant Women</th>
                         </tr>
                     </thead>
-                    <tbody id="camp-data-body">
-                        <!-- Table rows will be populated here by JavaScript -->
+                    <tbody>
+                        <tr>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-<table class="min-w-full table-auto bg-white rounded-lg shadow-md border border-gray-200">
-    <thead class="bg-gray-100 border-b">
-        <tr>
-            <th class="p-3 text-left font-semibold text-gray-700">Item</th>
-            <th class="p-3 text-left font-semibold text-gray-700">Response</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td class="p-3 font-medium text-gray-800">Are any health facilities damaged?</td>
-            <td class="p-3">No</td>
-        </tr>
-        <tr>
-            <td class="p-3 font-medium text-gray-800">If yes, list affected health facilities and type of damage</td>
-            <td class="p-3">—</td>
-        </tr>
-        <tr>
-            <td class="p-3 font-medium text-gray-800">Number of reported AGE cases</td>
-            <td class="p-3">0</td>
-        </tr>
-        <tr>
-            <td class="p-3 font-medium text-gray-800">AGE outbreaks or suspected clusters?</td>
-            <td class="p-3">No</td>
-        </tr>
-        <tr>
-            <td class="p-3 font-medium text-gray-800">Details of AGE situation</td>
-            <td class="p-3">0</td>
-        </tr>
-        <tr>
-            <td class="p-3 font-medium text-gray-800">Number of suspected dengue cases</td>
-            <td class="p-3">0</td>
-        </tr>
-        <tr>
-            <td class="p-3 font-medium text-gray-800">Number of confirmed dengue cases</td>
-            <td class="p-3">0</td>
-        </tr>
-        <tr>
-            <td class="p-3 font-medium text-gray-800">Larval surveys conducted?</td>
-            <td class="p-3">Yes</td>
-        </tr>
-        <tr>
-            <td class="p-3 font-medium text-gray-800">Vector control activities</td>
-            <td class="p-3">Fogging, Larviciding, Source reduction, Awareness session</td>
-        </tr>
-        <tr>
-            <td class="p-3 font-medium text-gray-800">Notes on dengue surveillance</td>
-            <td class="p-3">Yes</td>
-        </tr>
-        <tr>
-            <td class="p-3 font-medium text-gray-800">Is leptospirosis prophylaxis being provided?</td>
-            <td class="p-3">Yes</td>
-        </tr>
-        <tr>
-            <td class="p-3 font-medium text-gray-800">Number given doxycycline prophylaxis</td>
-            <td class="p-3">9000</td>
-        </tr>
-        <tr>
-            <td class="p-3 font-medium text-gray-800">Any suspected/confirmed leptospirosis cases?</td>
-            <td class="p-3">No</td>
-        </tr>
-    </tbody>
-</table>
-
-
-        <!-- Footer and Contact Info - REDESIGNED WITH CARD BACKGROUND -->
-        <footer class="mt-12">
-            <div class="bg-card-bg p-6 rounded-xl shadow-custom border border-gray-100 text-center text-gray-600">
-                
-                <!-- Disclaimer Section -->
-                <div class="mb-6 pb-4 border-b border-gray-200">
-                    <p class="text-lg font-semibold text-gray-800 mb-2">
-                        <i lucide="briefcase" class="w-5 h-5 inline mr-2 text-accent-secondary"></i>
-                        Official Use Disclaimer
-                    </p>
-                    <p class="text-sm font-medium mb-3">
-                        This dashboard is a <span class="text-accent-secondary font-bold">temporary field tool</span> to help health workers quickly understand the ground situation.
-                    </p>
-                    <p class="text-sm">
-                        For <span class="font-bold text-rdhs-blue">official use or distribution</span>, you must obtain formal confirmation from the <span class="font-bold">RDHS office</span> via the contact details below.
-                    </p>
-                </div>
-
-                <!-- Contact Info Section - Differentiated -->
-                <div class="bg-rdhs-blue/5 p-4 rounded-lg border border-rdhs-blue/20 mb-6">
-                    <p class="text-md font-bold text-rdhs-blue mb-3 uppercase tracking-wider">RDHS Contact Information</p>
-                    <div class="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-8 text-sm">
-                        <p class="flex items-center justify-center font-medium text-gray-700">
-                            <i lucide="map-pin" class="w-4 h-4 mr-1 text-rdhs-blue flex-shrink-0"></i>
-                            120 Court Rd, Trincomalee
-                        </p>
-                        <p class="flex items-center justify-center font-medium text-gray-700">
-                            <i lucide="phone" class="w-4 h-4 mr-1 text-rdhs-blue flex-shrink-0"></i>
-                            026 2222263
-                        </p>
-                        <p class="flex items-center justify-center font-medium text-gray-700">
-                            <i lucide="mail" class="w-4 h-4 mr-1 text-rdhs-blue flex-shrink-0"></i>
-                            trincomoinfo@gmail.com
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Copyright -->
-                <p class="mt-4 pt-4 border-t border-gray-200 text-xs text-gray-500">
-                    © 2025 Trincomalee RDHS Health Information Management Unit. All Rights Reserved.
-                </p>
-            </div>
-        </footer>
-
     </div>
 
-    <script>
-        // Data Structure based on uploaded files and MOH areas
-       const RAW_CAMP_DATA = [
-    { 
-        name: "Al Hithaya M.V", 
-        moh: "Mutur", 
-        families: 101, 
-        people: 434, 
-        male: 206, 
-        female: 228, 
-        infants: 0, 
-        under5: 40, 
-        pregnant: 2, 
-        deaths: 0, 
-        missing: 0 
-    }
-];
+    <div class="row">
+        <div class="col-md-8">
+            <div class="disclaimer-box">
+                <p class="mb-1">**Official Use Disclaimer**</p>
+                <small>
+                    <i class="fas fa-info-circle me-1"></i>
+                    This dashboard is a **temporary field tool** to help health workers quickly understand the ground situation.
+                    For **official use or distribution**, you must obtain formal confirmation from the **RDHS office** via the contact details provided.
+                </small>
+            </div>
+        </div>
 
+        <div class="col-md-4">
+            <div class="contact-card">
+                <h6 class="mb-2 text-primary"><i class="fas fa-phone-alt me-1"></i>RDHS Contact Information</h6>
+                <address class="mb-0 small">
+                    **Office of Regional Director of Health Services (RDHS)**<br>
+                    120 Court Rd, Trincomalee<br>
+                    Phone: <a href="tel:0262222263">026 2222263</a><br>
+                    Email: <a href="mailto:trincomoinfo@gmail.com">trincomoinfo@gmail.com</a>
+                </address>
+            </div>
+        </div>
+    </div>
 
-        // All potential MOH areas in the district
-        const ALL_MOH_AREAS = [
-            "Padavisripura", "Gomarankadawala", "Kuchchaveli", "Trincomalee",
-            "Thampalagamam", "Kinniya", "Eachchalampathu", "Seruwila",
-            "Kanthale", "Uppuveli", "Kurinchakerny", "Mutur"
-        ];
-        
-        let currentMOHFilter = null; // State to track the active filter
+    <footer class="text-center mt-5 pt-3 border-top text-muted small">
+        © 2025 Trincomalee RDHS Health Information Management Unit. All Rights Reserved.
+    </footer>
 
-        // --- Helper Functions ---
+</div>
 
-        /**
-         * Calculates the total statistics from the raw data.
-         * @param {Array} data - The dataset to calculate totals from.
-         * @returns {object} Total statistics.
-         */
-        function calculateTotals(data) {
-            const totals = {
-                totalCamps: data.length,
-                totalPeople: 0,
-                totalFamilies: 0,
-                totalInfants: 0,
-                totalUnder5: 0,
-                totalPregnant: 0,
-                totalDeaths: 0,
-                totalMissing: 0,
-            };
-
-            data.forEach(camp => {
-                totals.totalPeople += camp.people;
-                totals.totalFamilies += camp.families;
-                totals.totalInfants += camp.infants;
-                totals.totalUnder5 += camp.under5;
-                totals.totalPregnant += camp.pregnant;
-                totals.totalDeaths += camp.deaths;
-                totals.totalMissing += camp.missing;
-            });
-
-            return totals;
-        }
-
-        /**
-         * Creates an HTML string for a single summary card.
-         */
-        function createSummaryCard(title, value, iconName, colorClass) {
-            return `
-                <div class="bg-card-bg p-5 rounded-xl shadow-custom border-b-4 ${colorClass} hover:shadow-2xl transition duration-300 transform hover:scale-[1.02] cursor-default">
-                    <div class="flex items-center justify-between">
-                        <div class="p-3 ${colorClass}/20 rounded-full">
-                            <i lucide="${iconName}" class="w-6 h-6 ${colorClass}"></i>
-                        </div>
-                        <span class="text-3xl sm:text-4xl font-extrabold text-gray-900">${value.toLocaleString()}</span>
-                    </div>
-                    <p class="mt-4 text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wider">${title}</p>
-                </div>
-            `;
-        }
-
-        /**
-         * Renders the summary cards and updates the DOM based on the filtered data.
-         * If currentMOHFilter is set, it shows totals for that area. Otherwise, it shows global totals.
-         */
-        function renderSummaryCards() {
-            const dataToDisplay = currentMOHFilter 
-                ? RAW_CAMP_DATA.filter(c => c.moh === currentMOHFilter)
-                : RAW_CAMP_DATA;
-
-            const totals = calculateTotals(dataToDisplay);
-            const cardsContainer = document.getElementById('summary-cards');
-            
-            const cardData = [
-                { title: "Total People Displaced", value: totals.totalPeople, icon: "users", color: "border-rdhs-blue text-rdhs-blue" },
-                { title: "Total Active Camps", value: totals.totalCamps, icon: "tent", color: "border-accent-secondary text-accent-secondary" },
-                { title: "Families Sheltered", value: totals.totalFamilies, icon: "home", color: "border-accent-primary text-accent-primary" },
-                { title: "Vulnerable Individuals", value: totals.totalInfants + totals.totalUnder5 + totals.totalPregnant, icon: "shield-alert", color: "border-red-600 text-red-600" },
-            ];
-
-            cardsContainer.innerHTML = cardData.map(d => createSummaryCard(d.title, d.value, d.icon, d.color)).join('');
-            
-            lucide.createIcons();
-        }
-
-        /**
-         * Renders the detailed camp data table based on the active filter.
-         */
-        function renderCampTable() {
-            const tableBody = document.getElementById('camp-data-body');
-            const filterText = document.getElementById('current-moh-filter');
-            
-            const filteredData = currentMOHFilter
-                ? RAW_CAMP_DATA.filter(c => c.moh === currentMOHFilter)
-                : RAW_CAMP_DATA;
-
-            // Update the filter status text
-            filterText.textContent = currentMOHFilter 
-                ? `(Showing Camps in ${currentMOHFilter})` 
-                : `(Showing All ${RAW_CAMP_DATA.length} Camps)`;
-
-            if (filteredData.length === 0 && currentMOHFilter) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="7" class="text-center p-6 text-lg text-gray-500 bg-gray-50">
-                            No active camps reported in the ${currentMOHFilter} MOH Area at this time.
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-
-            const rows = filteredData.map(camp => `
-                <tr class="border-b last:border-b-0 hover:bg-rdhs-blue/5 transition duration-150">
-                    <td class="whitespace-nowrap font-medium text-gray-900">${camp.name}</td>
-                    <td class="text-gray-600 font-semibold">${camp.moh}</td>
-                    <td class="text-gray-800">${camp.families}</td>
-                    <td class="text-gray-800 font-bold">${camp.people}</td>
-                    <td class="text-accent-primary font-bold text-center">${camp.infants}</td>
-                    <td class="text-accent-primary font-bold text-center">${camp.under5}</td>
-                    <td class="text-accent-primary font-bold text-center">${camp.pregnant}</td>
-                </tr>
-            `).join('');
-
-            tableBody.innerHTML = rows;
-        }
-        
-        /**
-         * Renders the interactive MOH filter buttons.
-         */
-        function renderMOHFilters() {
-            const container = document.getElementById('moh-filter-container');
-            container.innerHTML = ''; // Clear existing buttons
-            const uniqueMohs = [...new Set(RAW_CAMP_DATA.map(c => c.moh))];
-            
-            // MOH areas with active camps
-            const activeMohs = uniqueMohs.filter(moh => RAW_CAMP_DATA.some(c => c.moh === moh));
-
-            // Create 'Show All' button
-            const allButton = document.createElement('button');
-            allButton.textContent = 'Show All Camps';
-            allButton.className = `px-5 py-2.5 rounded-xl font-bold transition duration-150 shadow-lg hover:shadow-xl ${currentMOHFilter === null ? 'selected' : 'bg-rdhs-blue/10 text-rdhs-blue hover:bg-rdhs-blue/20'}`;
-            allButton.onclick = () => filterData(null, allButton);
-            container.appendChild(allButton);
-            
-            // Create buttons for active MOH areas
-            activeMohs.forEach(moh => {
-                const button = document.createElement('button');
-                button.textContent = moh;
-                button.className = `px-5 py-2.5 rounded-xl font-bold transition duration-150 shadow-lg hover:shadow-xl ${currentMOHFilter === moh ? 'selected' : 'bg-rdhs-blue/10 text-rdhs-blue hover:bg-rdhs-blue/20'}`;
-                button.onclick = () => filterData(moh, button);
-                container.appendChild(button);
-            });
-            
-            // Add inactive MOH areas for completeness (can be helpful if a new camp opens)
-            const inactiveMohs = ALL_MOH_AREAS.filter(moh => !activeMohs.includes(moh));
-            inactiveMohs.forEach(moh => {
-                const button = document.createElement('button');
-                button.textContent = `${moh} (No Camps)`;
-                button.className = 'px-5 py-2.5 rounded-xl font-medium transition duration-150 bg-gray-100 text-gray-400 cursor-not-allowed shadow-md';
-                button.disabled = true;
-                container.appendChild(button);
-            });
-        }
-        
-        /**
-         * Filters the dashboard data based on the selected MOH area.
-         */
-        function filterData(mohArea, clickedButton) {
-            currentMOHFilter = mohArea;
-            
-            // Update button styles and re-render the filter container
-            document.querySelectorAll('#moh-filter-container button').forEach(btn => {
-                // Determine if this button represents the currently active filter
-                const isSelected = (mohArea === null && btn.textContent === 'Show All Camps') || (mohArea !== null && btn.textContent === mohArea);
-
-                // Reset classes
-                btn.classList.remove('selected', 'bg-rdhs-blue', 'text-white', 'bg-rdhs-blue/10', 'hover:bg-rdhs-blue/20');
-                
-                if (btn.disabled) {
-                    btn.classList.add('bg-gray-100', 'text-gray-400', 'cursor-not-allowed', 'shadow-md');
-                    return;
-                }
-
-                if (isSelected) {
-                    // Apply selected style
-                    btn.classList.add('selected');
-                } else {
-                    // Apply unselected style (Show All gets a neutral background, MOHs get the accent color)
-                    if (btn.textContent === 'Show All Camps') {
-                        btn.classList.add('bg-rdhs-blue/10', 'text-rdhs-blue', 'hover:bg-rdhs-blue/20');
-                    } else {
-                        btn.classList.add('bg-rdhs-blue/10', 'text-rdhs-blue', 'hover:bg-rdhs-blue/20');
-                    }
-                }
-            });
-
-            // Re-render dashboard sections with filtered data
-            renderSummaryCards();
-            renderCampTable();
-        }
-
-
-        // --- Initialization ---
-
-        function initDashboard() {
-            // 1. Update the last updated time
-            document.getElementById('data-update-time').innerHTML = '<i lucide="clock" class="w-4 h-4 inline mr-1"></i> Data Last Updated: <strong>December 6th, 2025, 11 AM </strong>';
-            
-            // 2. Render all components
-            renderMOHFilters(); // Renders interactive filter buttons
-            renderSummaryCards(); // Renders totals (initially for all)
-            renderCampTable(); // Renders the table (initially for all)
-            
-            // Re-render Lucide icons
-            lucide.createIcons(); 
-        }
-
-        // Run the initialization function when the window loads
-        window.onload = initDashboard;
-    </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
