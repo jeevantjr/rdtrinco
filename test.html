@@ -1,232 +1,182 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Post-Disaster Monitoring Dashboard — RDHS Trincomalee</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg:#0f172a; /* Darker blue background */
-      --card:#1e293b; /* Slate blue card background */
-      --muted:#94a3b8; /* Lighter muted text */
-      --primary:#3b82f6; /* Blue for primary action/accent */
-      --danger:#ef4444; /* Red for non-functioning/critical */
-      --success:#10b981; /* Green for functioning/OK */
-      --warning:#f59e0b; /* Amber for partial/alerts */
-      --glass: rgba(255,255,255,0.06);
-    }
-    *{box-sizing:border-box}
-    body{font-family:'Inter',system-ui,Segoe UI,Roboto,Arial; margin:0; background:var(--bg); color:#e2e8f0; -webkit-font-smoothing:antialiased;}
-    .wrap{max-width:1200px;margin:32px auto;padding:0 20px}
-    header{display:flex;gap:16px;align-items:center;margin-bottom:24px}
-    .brand{display:flex;gap:12px;align-items:center}
-    .logo{width:56px;height:56px;background:linear-gradient(135deg,var(--primary),#7c3aed);border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 25px rgba(2,6,23,0.7)}
-    .logo svg{width:32px;height:32px;fill:white;opacity:0.95}
-    h1{margin:0;font-size:24px;font-weight:700}
-    .subtitle{color:var(--muted);font-size:14px;font-weight:300}
-    .top-row{display:grid;grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));gap:16px;margin-top:12px;}
-    .card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 4px 12px rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.05); transition:transform 0.2s}
-    .card:hover{transform:translateY(-2px)}
-    .card h3{margin:0 0 12px 0;font-size:16px;color:white;display:flex;align-items:center;gap:8px}
-    .stat{font-size:32px;font-weight:800;color:var(--primary)}
-    .muted{color:var(--muted);font-size:14px}
-    table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
-    th,td{padding:12px 8px;text-align:left}
-    thead th{color:var(--muted);font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid rgba(255,255,255,0.05)}
-    tbody tr{border-top:1px solid rgba(255,255,255,0.03)}
-    tbody td:first-child{font-weight:600;color:white}
-    .badge{display:inline-block;padding:5px 10px;border-radius:999px;font-size:12px;font-weight:600;text-transform:uppercase}
-    .yes{background-color:var(--success);color:#064e3b}
-    .no{background-color:var(--danger);color:#450a0a}
-    .partial{background-color:var(--warning);color:#713f12}
-    .two-col{display:grid;grid-template-columns:3fr 1.5fr;gap:18px;margin-top:18px}
-    .icon-box{display:flex;align-items:center;gap:12px}
-    .icon-box svg{width:20px;height:20px;fill:var(--primary)}
-    .alert-container{margin-top:18px;display:flex;flex-direction:column;gap:12px}
-    .alert{padding:12px 16px;border-radius:10px;font-weight:600;display:flex;align-items:center;gap:10px}
-    .alert svg{width:20px;height:20px}
-    .alert.ok{background:rgba(16,185,129,0.15);color:var(--success)}
-    .alert.warn{background:rgba(245,158,11,0.15);color:var(--warning)}
-    .alert.danger{background:rgba(239,68,68,0.15);color:var(--danger)}
-    .contact-info div{padding:4px 0}
-    footer{margin-top:30px;color:var(--muted);font-size:13px}
-    @media (max-width:880px){.two-col{grid-template-columns:1fr}}
-  </style>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('lastUpdated').textContent = new Date().toLocaleDateString('en-US', {
-        year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
-      });
-
-      // Facility Data - Initial Blank State
-      const facilityData = [
-        { type: 'Base Hospitals', total: '', functioning: '', notFunctioning: '' },
-        { type: 'Divisional Hospitals (A)', total: '', functioning: '', notFunctioning: '' },
-        { type: 'Divisional Hospitals (B)', total: '', functioning: '', notFunctioning: '' },
-        { type: 'Primary Medical Care Units (PMCU)', total: '', functioning: '', notFunctioning: '' },
-        { type: 'MOH Offices', total: '', functioning: '', notFunctioning: '' },
-      ];
-      const facilityTableBody = document.getElementById('facilityTable').querySelector('tbody');
-      facilityData.forEach(item => {
-        const row = facilityTableBody.insertRow();
-        row.insertCell().textContent = item.type;
-        row.insertCell().textContent = item.total;
-        row.insertCell().textContent = item.functioning;
-        row.insertCell().textContent = item.notFunctioning;
-      });
-
-      // MOH Data - Initial Blank State (Using the list provided)
-      const mohList = [
-        'Padavisripura', 'Gomarankadawala', 'Kuchchaveli', 'Uppuveli', 'Trinco',
-        'Kinniya', 'Kurunjakerni', 'Thambalagamam', 'Kanthale', 'Muthur',
-        'Seruvilla', 'Echilampathu'
-      ];
-      const mohTableBody = document.getElementById('mohTable').querySelector('tbody');
-      mohList.forEach(moh => {
-        const row = mohTableBody.insertRow();
-        row.insertCell().textContent = moh;
-        // Add 8 blank cells for the health issue counts
-        for (let i = 0; i < 8; i++) {
-          row.insertCell().textContent = '';
-        }
-      });
-    });
-  </script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Post-Disaster Monitoring Dashboard — RDHS Trincomalee</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --muted:#9aa4b2;
+      --accent:#06b6d4;
+      --danger:#ef4444;
+      --success:#22c55e;
+      --glass: rgba(255,255,255,0.03);
+    }
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Inter',system-ui,Segoe UI,Roboto,Arial; 
+      margin:0; 
+      background:linear-gradient(180deg,#071029 0%, #0b1a2b 100%);
+      color:#e6eef6; 
+      -webkit-font-smoothing:antialiased;
+    }
+    .wrap{max-width:1200px;margin:28px auto;padding:20px;}
+    header{display:flex;gap:16px;align-items:center;margin-bottom:18px;flex-wrap:wrap;}
+    .brand{display:flex;gap:12px;align-items:center;}
+    .logo{
+      width:64px;height:64px;background:linear-gradient(135deg,var(--accent),#4f46e5);
+      border-radius:12px;display:flex;align-items:center;justify-content:center;
+      box-shadow:0 6px 20px rgba(2,6,23,0.6);
+    }
+    .logo svg{width:36px;height:36px;fill:white;opacity:0.95;}
+    h1{margin:0;font-size:20px;font-weight:700;}
+    .subtitle{color:var(--muted);font-size:13px;}
+    .top-row{display:flex;gap:16px;margin-top:8px;flex-wrap:wrap;}
+    .card{
+      background:var(--card);
+      border-radius:12px;
+      padding:20px;
+      box-shadow:0 6px 18px rgba(2,6,23,0.6);
+      flex:1;
+      min-width:220px;
+      position:relative;
+      overflow:hidden;
+    }
+    .card .icon{
+      position:absolute;
+      top:16px;
+      right:16px;
+      font-size:28px;
+      opacity:0.15;
+    }
+    .card h3{margin:0 0 12px 0;font-size:16px;}
+    .muted{color:var(--muted);font-size:13px;}
+    .stat{font-size:28px;font-weight:700;}
+    table{width:100%;border-collapse:collapse;margin-top:8px;font-size:14px;}
+    th,td{padding:10px 8px;text-align:left;}
+    thead th{color:var(--muted);font-weight:600;font-size:13px;}
+    tbody tr{border-top:1px solid rgba(255,255,255,0.03);}
+    footer{margin-top:20px;color:var(--muted);font-size:13px;}
+    .two-col{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-top:16px;}
+    @media (max-width:880px){.two-col{grid-template-columns:1fr}.top-row{flex-direction:column;}}
+  </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand">
-        <div class="logo" aria-hidden>
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3 12h-2v2h-2v-2H9v-2h2V9h2v2h2v2z"/></svg>
-        </div>
-        <div>
-          <h1>Post-Disaster Monitoring Dashboard</h1>
-          <div class="subtitle">Regional Directorate of Health Services — **Trincomalee** · **CRITICAL FIELD TOOL**</div>
-        </div>
-      </div>
-      <div style="margin-left:auto;text-align:right">
-        <div class="muted">Last Data Snapshot: <span id="lastUpdated">-</span></div>
-      </div>
-    </header>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden>
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 13.5V21h6v-5h6v5h6v-7.5c0-2.8-2.2-5-5-5h-8c-2.8 0-5 2.2-5 5zM8 3h8v4H8V3z"/></svg>
+        </div>
+        <div>
+          <h1>Post-Disaster Monitoring Dashboard</h1>
+          <div class="subtitle">Regional Director of Health Services — Trincomalee · Temporary Field Tool</div>
+        </div>
+      </div>
+      <div style="margin-left:auto;text-align:right">
+        <div class="muted">Last updated: <span id="lastUpdated">-</span></div>
+      </div>
+    </header>
 
-    <div class="top-row">
-      <div class="card">
-        <h3><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="var(--warning)"><path d="M11 15h2v2h-2v-2zm0-8h2v6h-2V7zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>Quick Summary: Critical Status</h3>
-        <div style="margin-top:8px;display:flex;flex-direction:column;gap:12px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.05)">
-            <div class="muted">Facilities Not Functioning</div>
-            <div class="stat" id="notFuncCount"> - </div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.05)">
-            <div class="muted">Power Issues Reported</div>
-            <div class="stat" id="powerCount"> - </div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div class="muted">Total Displaced Persons</div>
-            <div class="stat" id="displacedCount"> - </div>
-          </div>
-        </div>
-      </div>
+    <!-- Quick Summary Cards -->
+    <div class="top-row">
+      <div class="card">
+        <h3>Power & Utilities <i class="fas fa-bolt icon"></i></h3>
+        <div class="muted">Power issues count</div>
+        <div class="stat">-</div>
+      </div>
+      <div class="card">
+        <h3>Communication <i class="fas fa-signal icon"></i></h3>
+        <div class="muted">Network availability</div>
+        <div class="stat">-</div>
+      </div>
+      <div class="card">
+        <h3>Health Workforce <i class="fas fa-user-nurse icon"></i></h3>
+        <div class="muted">Available staff</div>
+        <div class="stat">-</div>
+      </div>
+      <div class="card">
+        <h3>Medical Supplies <i class="fas fa-pills icon"></i></h3>
+        <div class="muted">Supply stock status</div>
+        <div class="stat">-</div>
+      </div>
+    </div>
 
-      <div class="card" style="background-color:rgba(59,130,246,0.1); border-color:var(--primary);">
-        <h3><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="var(--primary)"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>RDHS Communication Hub</h3>
-        <div class="contact-info" style="margin-top:4px">
-          <div style="font-weight:700; color:white">Regional Director's Office (RDHS)</div>
-          <div class="muted">120 Court Rd, Trincomalee</div>
-          <div style="margin-top:10px">
-            📞 Phone: <b style="color:var(--primary)">026 2222263</b>
-          </div>
-          <div>
-            📧 Email: <b style="color:var(--primary)">trincomoinfo@gmail.com</b>
-          </div>
-        </div>
-      </div>
+    <!-- Facility Functionality Table -->
+    <section style="margin-top:18px">
+      <div class="card">
+        <h3>1. Facility Functionality (District Summary) <i class="fas fa-hospital icon"></i></h3>
+        <div class="muted">Update daily — counts of facilities by type.</div>
+        <div style="margin-top:12px;overflow:auto">
+          <table id="facilityTable">
+            <thead>
+              <tr><th>Facility Type</th><th>Total</th><th>Functioning</th><th>Not Functioning</th></tr>
+            </thead>
+            <tbody>
+              <!-- Data to be added later -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
 
-      <div class="card">
-        <h3><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="var(--success)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>Usage Guidance</h3>
-        <div class="muted" style="margin-top:4px">
-          This dashboard is a **temporary field assessment tool** for rapid response.
-        </div>
-        <div class="alert-container">
-          <div class="alert warn">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
-            **Official Use:** Must be confirmed by RDHS.
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- MOH Health Issues Table -->
+    <section style="margin-top:18px">
+      <div class="card">
+        <h3>2. MOH-wise Health Issues (Daily Snapshot) <i class="fas fa-clipboard-list icon"></i></h3>
+        <div class="muted">Columns represent counts for that day. Data will be entered when available.</div>
+        <div style="margin-top:12px;overflow:auto">
+          <table id="mohTable">
+            <thead>
+              <tr>
+                <th>MOH</th>
+                <th>Dengue</th>
+                <th>Lepto</th>
+                <th>AGE</th>
+                <th>Hep A</th>
+                <th>Skin</th>
+                <th>Suicide Attempts</th>
+                <th>Suicide</th>
+                <th>Maternal Deaths</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Data to be added later -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
 
-    <section style="margin-top:24px">
-      <div class="card">
-        <h3><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="white"><path d="M21 10h-3V7c0-1.65-1.35-3-3-3H8c-1.65 0-3 1.35-3 3v3H2v2h3v10h14V12h3v-2zm-11-3h4c.55 0 1 .45 1 1v2H9V8c0-.55.45-1 1-1zM7 20v-8h10v8H7z"/></svg>Facility Functionality (District Summary)</h3>
-        <div class="muted">Current operational status of all health facilities. Update **daily** with latest ground reports.</div>
-        <div style="margin-top:12px;overflow-x:auto">
-          <table id="facilityTable" aria-describedby="Facility functionality summary">
-            <thead>
-              <tr><th>Facility Type</th><th>Total</th><th>Functioning</th><th>Not Functioning</th><th>Status</th></tr>
-            </thead>
-            <tbody>
-                          </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
+    <!-- Contacts Card -->
+    <section style="margin-top:18px">
+      <div class="card">
+        <h3>RDHS Contact <i class="fas fa-phone icon"></i></h3>
+        <div>
+          <div style="font-weight:700">Office of the Regional Director of Health Services (RDHS)</div>
+          <div class="muted">120 Court Rd, Trincomalee</div>
+          <div style="margin-top:6px">Phone: <b>026 2222263</b></div>
+          <div>Email: <b>trincomoinfo@gmail.com</b></div>
+        </div>
+      </div>
+    </section>
 
-    <section>
-      <div class="two-col">
-        <div class="card" style="min-height:400px">
-          <h3><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="white"><path d="M19 8H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H5V10h14v10zm-3-8h-2v2h2v-2zm-4 0H8v2h4v-2zM7 5H5V3h2v2zm4 0H9V3h2v2zm4 0h-2V3h2v2zm4 0h-2V3h2v2z"/></svg>MOH-wise Health Issues (Daily Snapshot)</h3>
-          <div class="muted">Daily counts of priority diseases/incidents by Medical Officer of Health (MOH) area.</div>
-          <div style="margin-top:12px;overflow-x:auto">
-            <table id="mohTable">
-              <thead>
-                <tr>
-                  <th>MOH Area</th>
-                  <th>Dengue</th>
-                  <th>Lepto</th>
-                  <th>AGE</th>
-                  <th>Hep A</th>
-                  <th>Skin</th>
-                  <th>Suicide<br>Attempts</th>
-                  <th>Suicide</th>
-                  <th>Maternal<br>Deaths</th>
-                </tr>
-              </thead>
-              <tbody>
-                              </tbody>
-            </table>
-          </div>
-        </div>
-        <div class="card" style="background-color:rgba(239,68,68,0.08); border-color:var(--danger);">
-          <h3><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="var(--danger)"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>Priority Alert Indicators</h3>
-          <div class="muted">Areas to monitor closely for immediate action.</div>
-          <div style="margin-top:12px;display:flex;flex-direction:column;gap:12px">
-            <div class="alert danger">
-              Non-Functioning Hospitals: **-**
-            </div>
-            <div class="alert warn">
-              New Dengue Cases Today: **-**
-            </div>
-            <div class="alert ok">
-              Water/Sanitation Issues: **-**
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <footer>
-      <div style="margin-top:20px;background:rgba(255,255,255,0.03);padding:14px;border-radius:10px;border-left:4px solid var(--primary)">
-        <div style="font-weight:700; color:white">Disclaimer: Official Use Only</div>
-        <div class="muted" style="margin-top:6px">
-          This dashboard is a **temporary field tool** for rapid situational awareness by health workers. For **official distribution or external reporting**, formal confirmation from the **RDHS office** is mandatory.
-        </div>
-        <div style="margin-top:10px;color:var(--muted);font-size:12px">© 2025 Trincomalee RDHS Health Information Management Unit. All Rights Reserved.</div>
-      </div>
-    </footer>
-
-  </div>
+    <!-- Disclaimer Footer -->
+    <footer>
+      <div style="margin-top:14px;background:rgba(255,255,255,0.02);padding:12px;border-radius:10px">
+        <div style="font-weight:700">Official Use Disclaimer</div>
+        <div class="muted" style="margin-top:6px">
+          This dashboard is a <b>temporary field tool</b> to help health workers quickly understand the ground situation. For <b>official use or distribution</b>, formal confirmation from the <b>RDHS office</b> is required.
+        </div>
+        <div style="margin-top:8px;color:var(--muted);font-size:13px">
+          © 2025 Trincomalee RDHS Health Information Management Unit. All Rights Reserved.
+        </div>
+      </div>
+    </footer>
+  </div>
 </body>
 </html>
