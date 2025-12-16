@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Under Development - RDHS Trincomalee</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* Bright and friendly background */
+            background: linear-gradient(135deg, #64b5f6 0%, #1e88e5 100%); 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #ffffff;
+            text-align: center;
+        }
+
+        .development-card {
+            background-color: rgba(255, 255, 255, 0.95); /* Slightly transparent white card */
+            border-radius: 20px;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.3);
+            padding: 50px 40px;
+            max-width: 600px;
+            width: 90%;
+            color: #1a237e; /* Dark Blue text */
+        }
+
+        .icon-container {
+            font-size: 80px;
+            color: #ff9800; /* Vibrant Orange Icon */
+            margin-bottom: 25px;
+            /* Animation for subtle movement */
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #0d47a1; /* Deep Blue Heading */
+            font-weight: 700;
+        }
+
+        p {
+            font-size: 1.15em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .status-message {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #d81b60; /* Pink Highlight for the main status */
+            padding: 10px 0;
+            margin-top: 20px;
+            border-top: 2px dashed #e0e0e0;
+        }
+
+        /* Home Button Style */
+        .home-button {
+            display: inline-block;
+            background: linear-gradient(45deg, #4caf50, #8bc34a); /* Green gradient */
+            color: white;
+            padding: 12px 25px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .home-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.6);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="development-card">
+        
+        <div class="icon-container">
+            <i class="fas fa-tools"></i> 
+        </div>
+        
+        <h1>Data Portal Under Development</h1>
+        
+        <p>
+            Thank you for your patience! We are currently in the process of developing and integrating this section of the <b>Utility Expenditure Portal</b>.
+        </p>
+        
+        <div class="status-message">
+            We will update this dashboard soon as possible.
+        </div>
+        
+        <p>
+            The final goal is to ensure a reliable, efficient, and effective expenditure management system for all institutions under the RDHS Trincomalee.
+        </p>
+        
+        <a href="https://jeevantjr.github.io/rdtrinco/" class="home-button">
+            <i class="fas fa-home"></i> Go Back to Main Dashboard
+        </a>
+
+    </div>
+
+</body>
+</html>
