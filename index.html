@@ -3,33 +3,109 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Trincomalee District Welfare Centre Dashboard</title>
+  <title>Trincomalee District Welfare Centre Dashboard — Cyclone Titwah 2025</title>
+  <meta name="description" content="Situation dashboard tracking displaced families and vulnerable groups during Cyclone Titwah & Flooding, Trincomalee, Nov–Dec 2025." />
+  <meta name="author" content="Dr. T. Jeevaraj" />
+  <meta property="og:title" content="Trincomalee District Welfare Centre Situation Dashboard" />
+  <meta property="og:description" content="Disaster health monitoring dashboard — Cyclone Titwah & Flooding, Nov–Dec 2025" />
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     body { font-family: "Inter", sans-serif; background: #f0fdf4; }
-    .card { background: #ffffff; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
-    .stat-badge { background: #d1fae5; border-radius: 10px; }
-    .footer-card { background: #e0f2fe; border-radius: 12px; padding: 16px; margin-top: 20px; }
+    .card { background: #ffffff; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.07); }
+    .stat-badge { background: #d1fae5; border-radius: 12px; }
+
+    /* Hero gradient banner */
+    .hero-banner {
+      background: linear-gradient(135deg, #064e3b 0%, #065f46 40%, #0369a1 100%);
+      border-radius: 16px;
+      padding: 2rem 2rem 1.5rem;
+      color: white;
+      box-shadow: 0 8px 30px rgba(6,78,59,0.25);
+      margin-bottom: 1.5rem;
+    }
+    .hero-banner .event-chip {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 3px 14px;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+
+    /* Developer section */
+    .dev-section {
+      background: linear-gradient(135deg, #0d2218 0%, #0a1a2e 100%);
+      padding: 3.5rem 1.5rem;
+      text-align: center;
+      margin-top: 2.5rem;
+      border-radius: 16px;
+    }
+    .dev-photo {
+      width: 96px; height: 96px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid rgba(255,255,255,0.25);
+      margin-bottom: 1rem;
+    }
+    .dev-btn {
+      display: inline-block;
+      padding: 7px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      margin: 4px;
+      transition: opacity 0.2s;
+    }
+    .dev-btn:hover { opacity: 0.85; }
   </style>
 </head>
 <body class="min-h-screen p-6">
 
-<!-- Heading -->
-<header class="max-w-7xl mx-auto mb-6">
-  <div class="flex items-center gap-4">
-    <div class="w-16 h-16 rounded-lg bg-gradient-to-br from-green-500 to-blue-400 flex items-center justify-center text-white text-4xl shadow">
-      🚑
+<!-- Hero Banner -->
+<header class="max-w-7xl mx-auto">
+  <div class="hero-banner">
+    <div class="flex flex-wrap items-start gap-5">
+      <div class="w-16 h-16 rounded-xl bg-white bg-opacity-20 flex items-center justify-center text-4xl shadow-lg flex-shrink-0">
+        🌊
+      </div>
+      <div class="flex-1">
+        <span class="event-chip">🇱🇰 Trincomalee District · Sri Lanka</span>
+        <h1 class="text-2xl md:text-3xl font-extrabold leading-tight mb-1">
+          Welfare Centre Situation Dashboard
+        </h1>
+        <p class="text-white text-opacity-80 text-sm mb-1">
+          Office of Regional Director of Health Services (RDHS), Trincomalee
+        </p>
+        <p class="text-xs" style="color:rgba(255,255,255,0.6);">
+          🌀 Cyclone Titwah &amp; Flooding &nbsp;·&nbsp; 27 Nov – 12 Dec 2025
+        </p>
+      </div>
+      <div class="flex-shrink-0 text-right hidden md:block">
+        <span class="inline-block bg-green-400 text-green-900 text-xs font-bold px-3 py-1 rounded-full">
+          ✅ No Deaths · No Missing
+        </span>
+      </div>
     </div>
-    <div>
-      <h1 class="text-4xl font-extrabold text-slate-800">
-        🚑 Trincomalee District Welfare Centre Situation Dashboard
-      </h1>
-      <p class="text-sm text-slate-700 mt-1">Office of Regional Director of Health Services (RDHS), Trincomalee</p>
-      <p class="text-xs text-slate-500">Cyclone Titwah & Flooding | 27 Nov – 12 Dec 2025</p>
+
+    <!-- Quick nav chips -->
+    <div class="flex flex-wrap gap-2 mt-4">
+      <a href="Electricity-Bill.html" class="inline-flex items-center gap-1 bg-white bg-opacity-10 hover:bg-opacity-20 text-white text-xs font-medium px-3 py-1.5 rounded-full transition">
+        ⚡ Electricity Bill Tracker
+      </a>
+      <a href="Water-Supply-Bill.html" class="inline-flex items-center gap-1 bg-white bg-opacity-10 hover:bg-opacity-20 text-white text-xs font-medium px-3 py-1.5 rounded-full transition">
+        💧 Water Supply Bill Tracker
+      </a>
+      <a href="https://drjeevaraj.com/dev.html" target="_blank" class="inline-flex items-center gap-1 bg-white bg-opacity-10 hover:bg-opacity-20 text-white text-xs font-medium px-3 py-1.5 rounded-full transition">
+        💻 Developer Portfolio
+      </a>
     </div>
   </div>
 </header>
@@ -41,101 +117,141 @@
   <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
     <div class="card p-6 stat-badge">
       <div class="text-4xl mb-2">🏕️</div>
-      <h3 class="text-sm text-slate-700">Peak Welfare Centres</h3>
+      <h3 class="text-sm text-slate-700 font-medium">Peak Welfare Centres</h3>
       <div class="mt-2 text-4xl font-extrabold text-slate-800">47</div>
-      <p class="text-xs text-slate-600 mt-1">Highest number of camps (03–04 Dec)</p>
+      <p class="text-xs text-slate-500 mt-1">Highest number of camps (03–04 Dec)</p>
     </div>
 
     <div class="card p-6 stat-badge">
       <div class="text-4xl mb-2">👪</div>
-      <h3 class="text-sm text-slate-700">Peak Families Displaced</h3>
+      <h3 class="text-sm text-slate-700 font-medium">Peak Families Displaced</h3>
       <div class="mt-2 text-4xl font-extrabold text-slate-800">5,548</div>
-      <p class="text-xs text-slate-600 mt-1">Peak on 04 December</p>
+      <p class="text-xs text-slate-500 mt-1">Peak on 04 December 2025</p>
     </div>
 
     <div class="card p-6 stat-badge">
       <div class="text-4xl mb-2">📊</div>
-      <h3 class="text-sm text-slate-700">Peak Total Population</h3>
+      <h3 class="text-sm text-slate-700 font-medium">Peak Total Population</h3>
       <div class="mt-2 text-4xl font-extrabold text-slate-800">16,643</div>
-      <p class="text-xs text-slate-600 mt-1">No deaths • No missing persons</p>
+      <p class="text-xs text-slate-500 mt-1">No deaths · No missing persons</p>
     </div>
   </section>
 
 
-  <!-- No Deaths Highlight -->
-  <section class="card p-5 bg-green-50 border-l-4 border-green-500">
-    <div class="text-3xl mb-1">🛡️</div>
-    <h2 class="text-lg font-semibold text-green-700">No deaths or missing persons reported</h2>
-    <p class="text-sm text-slate-700 mt-1">
-      Strong community coordination and timely evacuation ensured zero casualties.
-    </p>
+  <!-- Zero Casualty Highlight -->
+  <section class="card p-5 border-l-4 border-green-500" style="background:#f0fdf4;">
+    <div class="flex items-start gap-3">
+      <div class="text-3xl">🛡️</div>
+      <div>
+        <h2 class="text-lg font-semibold text-green-700">No deaths or missing persons reported</h2>
+        <p class="text-sm text-slate-600 mt-1">
+          Strong community coordination, timely evacuation, and multi-agency response ensured zero casualties throughout the 16-day emergency.
+        </p>
+      </div>
+    </div>
   </section>
 
 
-  <!-- Charts -->
+  <!-- Charts Row -->
   <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
     <div class="card p-5 lg:col-span-2">
-      <h3 class="text-md font-semibold mb-3 text-slate-800">📈 Families & Population Over Time</h3>
+      <h3 class="text-base font-semibold mb-1 text-slate-800">📈 Families &amp; Population Over Time</h3>
+      <p class="text-xs text-slate-400 mb-3">27 November – 12 December 2025 · Zero on 11–12 Dec (no camps)</p>
       <canvas id="tsChart" height="220"></canvas>
-      <p class="text-xs text-slate-500 mt-2">Includes 11 & 12 December (No camps reported)</p>
-      <p class="text-xs text-slate-500 mt-2">Includes 7,8,9,10,11 & 12 December (No camps reported)</p>
     </div>
 
     <div class="card p-5">
-      <h3 class="text-md font-semibold mb-3">👶 Vulnerable Groups (Peak)</h3>
-      <ul class="space-y-4">
-        <li class="flex justify-between text-lg"><span>🤰 Pregnant mothers</span><strong>101</strong></li>
-        <li class="flex justify-between text-lg"><span>🍼 Infants</span><strong>68</strong></li>
-        <li class="flex justify-between text-lg"><span>🧒 Under 5 children</span><strong>1,089</strong></li>
+      <h3 class="text-base font-semibold mb-3 text-slate-800">👶 Vulnerable Groups (Peak)</h3>
+      <ul class="space-y-4 mb-4">
+        <li class="flex justify-between text-base"><span>🤰 Pregnant mothers</span><strong class="text-slate-800">101</strong></li>
+        <li class="flex justify-between text-base"><span>🍼 Infants</span><strong class="text-slate-800">68</strong></li>
+        <li class="flex justify-between text-base"><span>🧒 Under-5 children</span><strong class="text-slate-800">1,089</strong></li>
       </ul>
-      <canvas id="vulnChart" height="200" class="mt-4"></canvas>
+      <canvas id="vulnChart" height="200"></canvas>
     </div>
 
   </section>
 
 
-  <!-- MOH Area Breakdown -->
+  <!-- MOH Area Chart -->
   <section class="card p-5">
-    <h3 class="text-lg font-semibold text-slate-800">🏥 Displaced Population by MOH Area (Peak)</h3>
-    <p class="text-xs text-slate-500 mb-4">04 December 2025</p>
-    <canvas id="mohChart" height="140"></canvas>
+    <h3 class="text-base font-semibold text-slate-800 mb-1">🏥 Displaced Population by MOH Area (Peak Day)</h3>
+    <p class="text-xs text-slate-400 mb-4">04 December 2025 — Total: 16,643 persons</p>
+    <canvas id="mohChart" height="130"></canvas>
   </section>
 
-</main>
+
+  <!-- Timeline Summary Table -->
+  <section class="card p-5 overflow-x-auto">
+    <h3 class="text-base font-semibold text-slate-800 mb-3">📅 Timeline Summary — Key Milestones</h3>
+    <table class="w-full text-sm text-left border-collapse">
+      <thead>
+        <tr class="bg-slate-50 text-slate-600">
+          <th class="px-4 py-2 border-b font-semibold">Date</th>
+          <th class="px-4 py-2 border-b font-semibold">Welfare Centres</th>
+          <th class="px-4 py-2 border-b font-semibold">Families</th>
+          <th class="px-4 py-2 border-b font-semibold">Population</th>
+          <th class="px-4 py-2 border-b font-semibold">Note</th>
+        </tr>
+      </thead>
+      <tbody class="text-slate-700">
+        <tr class="hover:bg-slate-50"><td class="px-4 py-2 border-b">27 Nov</td><td class="px-4 py-2 border-b">—</td><td class="px-4 py-2 border-b">89</td><td class="px-4 py-2 border-b">342</td><td class="px-4 py-2 border-b text-slate-400">Onset</td></tr>
+        <tr class="hover:bg-slate-50"><td class="px-4 py-2 border-b">30 Nov</td><td class="px-4 py-2 border-b">—</td><td class="px-4 py-2 border-b">1,790</td><td class="px-4 py-2 border-b">5,011</td><td class="px-4 py-2 border-b text-slate-400">Rapid escalation</td></tr>
+        <tr class="hover:bg-slate-50"><td class="px-4 py-2 border-b">02 Dec</td><td class="px-4 py-2 border-b">—</td><td class="px-4 py-2 border-b">4,271</td><td class="px-4 py-2 border-b">13,062</td><td class="px-4 py-2 border-b text-slate-400">Major surge</td></tr>
+        <tr class="hover:bg-slate-50 font-semibold text-green-800 bg-green-50"><td class="px-4 py-2 border-b">04 Dec</td><td class="px-4 py-2 border-b">47</td><td class="px-4 py-2 border-b">5,548</td><td class="px-4 py-2 border-b">16,643</td><td class="px-4 py-2 border-b">🔺 PEAK DAY</td></tr>
+        <tr class="hover:bg-slate-50"><td class="px-4 py-2 border-b">05 Dec</td><td class="px-4 py-2 border-b">—</td><td class="px-4 py-2 border-b">482</td><td class="px-4 py-2 border-b">1,720</td><td class="px-4 py-2 border-b text-slate-400">Rapid de-escalation</td></tr>
+        <tr class="hover:bg-slate-50"><td class="px-4 py-2 border-b">06 Dec</td><td class="px-4 py-2 border-b">—</td><td class="px-4 py-2 border-b">101</td><td class="px-4 py-2 border-b">434</td><td class="px-4 py-2 border-b text-slate-400">Near resolution</td></tr>
+        <tr class="hover:bg-slate-50 text-slate-400"><td class="px-4 py-2">07–12 Dec</td><td class="px-4 py-2">0</td><td class="px-4 py-2">0</td><td class="px-4 py-2">0</td><td class="px-4 py-2">✅ All clear</td></tr>
+      </tbody>
+    </table>
+  </section>
 
 
-<!-- Footer -->
-<footer class="max-w-4xl mx-auto footer-card shadow">
-
-  <div class="text-center text-slate-700 text-sm leading-relaxed">
-    <div class="text-2xl mb-2">⚠️ Official Use Disclaimer</div>
-
-    <p class="mb-2">
-      This dashboard is a <strong>temporary field tool</strong> for rapid situational understanding.
-      For <strong>official distribution</strong>, please obtain confirmation from:
+  <!-- About the Developer -->
+  <div class="dev-section">
+    <h2 style="color:#9ca3af; font-size:12px; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:1rem;">About the Developer</h2>
+    <img src="https://drjeevaraj.com/T. Jeevaraj.jpg" alt="Dr. T. Jeevaraj" class="dev-photo" />
+    <h3 style="color:#ffffff; font-size:1.15rem; font-weight:700; margin:0 0 4px;">Dr. Thangarasa Jeevaraaj</h3>
+    <p style="color:#9ca3af; font-size:0.8rem; margin:0 0 4px;">Dr. T. Jeevaraj</p>
+    <p style="color:#6b7280; font-size:0.78rem; margin:0 0 1.25rem; line-height:1.5;">
+      MBBS · MCGP · MSc Biomedical Informatics<br>
+      MD Trainee, Health Informatics · PGIM, University of Colombo · Sri Lanka
     </p>
-
-    <p class="font-semibold">
-      Office of Regional Director of Health Services (RDHS), Trincomalee
-    </p>
-
-    <p>
-      📍 120 Court Road, Trincomalee<br>
-      ☎️ 026 2222263<br>
-      📧 trincomoinfo@gmail.com
-    </p>
-
-    <hr class="my-3 border-slate-300">
-
-    <p class="text-sm">
-      Prepared by <strong>Health Information Management Unit</strong><br>
-      Office of the Regional Director of Health Services, Trincomalee
-    </p>
+    <div>
+      <a href="https://drjeevaraj.com" target="_blank" class="dev-btn" style="background:#1d4ed8; color:#fff;">🌐 Website</a>
+      <a href="https://drjeevaraj.com/cv.html" target="_blank" class="dev-btn" style="background:#374151; color:#fff;">📄 CV</a>
+      <a href="https://drjeevaraj.com/dev.html" target="_blank" class="dev-btn" style="background:#065f46; color:#fff;">💻 Dev Portfolio</a>
+      <a href="https://www.linkedin.com/in/geevanathy/" target="_blank" class="dev-btn" style="background:#0a66c2; color:#fff;">LinkedIn</a>
+      <a href="https://x.com/drjeevaraj" target="_blank" class="dev-btn" style="background:#111827; color:#fff;">𝕏 Twitter</a>
+      <a href="https://www.amazon.com/dp/B0H333G41P" target="_blank" class="dev-btn" style="background:#92400e; color:#fff;">📖 Book</a>
+    </div>
   </div>
 
-</footer>
 
+  <!-- Footer -->
+  <footer class="rounded-xl p-5 text-center text-sm" style="background:#e0f2fe; margin-top: 0.5rem;">
+    <div class="text-xl mb-2">⚠️ Official Use Disclaimer</div>
+    <p class="text-slate-700 mb-2">
+      This dashboard is a <strong>temporary field tool</strong> for rapid situational awareness.
+      For <strong>official distribution</strong>, obtain confirmation from:
+    </p>
+    <p class="font-semibold text-slate-800">
+      Office of Regional Director of Health Services (RDHS), Trincomalee
+    </p>
+    <p class="text-slate-600 mt-1">
+      📍 120 Court Road, Trincomalee &nbsp;·&nbsp; ☎️ 026 2222263 &nbsp;·&nbsp; 📧 trincomoinfo@gmail.com
+    </p>
+    <hr class="my-3 border-slate-300">
+    <p class="text-slate-500 text-xs">
+      Prepared by the <strong>Health Information Management Unit</strong>, RDHS Trincomalee &nbsp;·&nbsp;
+      Developed by <a href="https://drjeevaraj.com" target="_blank" class="text-blue-600 hover:underline font-semibold">Dr. T. Jeevaraj</a> &nbsp;·&nbsp;
+      <a href="https://drjeevaraj.com/cv.html" target="_blank" class="text-blue-500 hover:underline">CV</a> &nbsp;·&nbsp;
+      <a href="https://drjeevaraj.com/dev.html" target="_blank" class="text-blue-500 hover:underline">Portfolio</a>
+    </p>
+  </footer>
+
+</main>
 
 
 <!-- Charts Script -->
@@ -146,7 +262,7 @@
     "09 Dec","10 Dec","11 Dec","12 Dec"
   ];
 
-  const families = [89,114,888,1790,1878,4271,5118,5548,482,101,0,0,0,0,0,0];
+  const families   = [89,114,888,1790,1878,4271,5118,5548,482,101,0,0,0,0,0,0];
   const population = [342,428,2706,5011,5050,13062,15534,16643,1720,434,0,0,0,0,0,0];
 
   new Chart(document.getElementById('tsChart'), {
@@ -158,17 +274,24 @@
           label: 'Families',
           data: families,
           borderColor: '#0ea5e9',
-          backgroundColor: 'rgba(14,165,233,0.25)',
-          tension: 0.35, fill: true
+          backgroundColor: 'rgba(14,165,233,0.18)',
+          tension: 0.35, fill: true, pointRadius: 4, pointHoverRadius: 6
         },
         {
           label: 'Population',
           data: population,
-          borderColor: '#047857',
-          backgroundColor: 'rgba(4,120,87,0.25)',
-          tension: 0.35, fill: true
+          borderColor: '#059669',
+          backgroundColor: 'rgba(5,150,105,0.15)',
+          tension: 0.35, fill: true, pointRadius: 4, pointHoverRadius: 6
         }
       ]
+    },
+    options: {
+      plugins: { legend: { position: 'top' } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+        x: { grid: { display: false } }
+      }
     }
   });
 
@@ -177,9 +300,14 @@
     data: {
       labels: ['Pregnant Mothers','Infants','Under 5 Children'],
       datasets: [{
-        data: [101,68,1089],
-        backgroundColor: ['#34d399','#3b82f6','#facc15']
+        data: [101, 68, 1089],
+        backgroundColor: ['#34d399','#3b82f6','#facc15'],
+        borderWidth: 2, borderColor: '#fff'
       }]
+    },
+    options: {
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } },
+      cutout: '60%'
     }
   });
 
@@ -191,10 +319,19 @@
         label: 'Displaced Population',
         data: [9348,2920,1795,1048,921,448,122,10,26,5],
         backgroundColor: [
-          '#0284c7','#38bdf8','#0ea5e9','#7dd3fc','#06b6d4',
-          '#34d399','#4ade80','#10b981','#a3e635','#65a30d'
-        ]
+          '#0284c7','#0ea5e9','#38bdf8','#7dd3fc','#06b6d4',
+          '#059669','#34d399','#10b981','#84cc16','#65a30d'
+        ],
+        borderRadius: 6
       }]
+    },
+    options: {
+      indexAxis: 'y',
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } },
+        y: { grid: { display: false } }
+      }
     }
   });
 </script>
